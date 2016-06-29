@@ -6,7 +6,7 @@
   },
 
   "frameworks": {
-    "net45": {
+    "net451": {
       "frameworkAssemblies": {
         "System.Runtime": {
           "type": "build",
