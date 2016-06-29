@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+using Dapper;
 
 namespace DapperWrapper
 {
@@ -155,6 +156,14 @@ namespace DapperWrapper
             bool buffered = true,
             string splitOn = "Id",
             int? commandTimeout = null,
+            CommandType? commandType = null);
+
+        SqlMapper.GridReader QueryMultiple(string sql, object param = null,
+            IDbTransaction transaction = null, int? commandTimeout = null,
+            CommandType? commandType = null);
+
+        Task<SqlMapper.GridReader> QueryMultipleAsync(string sql, object param = null,
+            IDbTransaction transaction = null, int? commandTimeout = null,
             CommandType? commandType = null);
 
     }

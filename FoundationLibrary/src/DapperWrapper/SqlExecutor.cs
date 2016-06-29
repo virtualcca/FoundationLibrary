@@ -415,6 +415,36 @@ namespace DapperWrapper
             }
         }
 
+        public SqlMapper.GridReader QueryMultiple(string sql, object param = null,
+            IDbTransaction transaction = null, int? commandTimeout = null,
+            CommandType? commandType = null)
+        {
+            try
+            {
+                _dbConnection.Open();
+                return _dbConnection.QueryMultiple(sql, param, transaction, commandTimeout, commandType);
+            }
+            finally
+            {
+                _dbConnection.Close();
+            }
+        }
+
+        public Task<SqlMapper.GridReader> QueryMultipleAsync(string sql, object param = null,
+            IDbTransaction transaction = null, int? commandTimeout = null,
+            CommandType? commandType = null)
+        {
+            try
+            {
+                _dbConnection.Open();
+                return _dbConnection.QueryMultipleAsync(sql, param, transaction, commandTimeout, commandType);
+            }
+            finally
+            {
+                _dbConnection.Close();
+            }
+        }
+
         public void Dispose()
         {
             _dbConnection.Dispose();
