@@ -1,0 +1,28 @@
+﻿{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "Dapper": "1.42.0"
+  },
+
+  "frameworks": {
+    "net45": {
+      "frameworkAssemblies": {
+        "System.Runtime": {
+          "type": "build",
+          "version": ""
+        },
+        "System.Threading.Tasks": {
+          "type": "build",
+          "version": ""
+        },
+        "System.Data": {
+          "type": "build",
+          "version": ""
+        },
+        "System.Transactions": "4.0.0.0"
+      },
+      "buildOptions": { "define": [ "NET45", "DOTNET" ] }
+    }
+  }
+}
