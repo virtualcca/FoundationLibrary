@@ -1,0 +1,20 @@
+﻿{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "Microsoft.Net.Http": "2.2.29",
+    "Newtonsoft.Json": "8.0.3"
+  },
+
+  "frameworks": {
+    "net4": {
+      "dependencies": {
+        "Microsoft.Bcl.Async": "1.0.168"
+      },
+      "buildOptions": { "define": [ "NET4", "DOTNET" ] }
+    },
+    "net45": {
+      "buildOptions": { "define": [ "NET45", "DOTNET" ] }
+    }
+  }
+}
