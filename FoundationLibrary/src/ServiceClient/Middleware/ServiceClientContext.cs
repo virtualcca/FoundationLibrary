@@ -30,7 +30,7 @@ namespace ServiceClients.Middleware
         /// <summary>
         ///     内部请求用的<see cref="HttpClient"/>实例
         /// </summary>
-        internal HttpClient InternalHttpClient { get; }
+        internal HttpClient InnerHttpClient { get; }
 
         /// <summary>
         ///     创建ServiceClient上下文实例
@@ -38,7 +38,7 @@ namespace ServiceClients.Middleware
         /// <param name="httpClient"></param>
         internal ServiceClientContext(HttpClient httpClient)
         {
-            InternalHttpClient = httpClient;
+            InnerHttpClient = httpClient;
         }
     }
 }

@@ -33,21 +33,21 @@ namespace ServiceClients.Middleware
                 case HttpVerb.Get:
                     result =
                         await
-                            context.InternalHttpClient.GetAsync(context.Url).ConfigureAwait(false);
+                            context.InnerHttpClient.GetAsync(context.Url).ConfigureAwait(false);
                     break;
                 case HttpVerb.Post:
                     result =
                         await
-                            context.InternalHttpClient.PostAsync(context.Url, context.RequestContent).ConfigureAwait(false);
+                            context.InnerHttpClient.PostAsync(context.Url, context.RequestContent).ConfigureAwait(false);
                     break;
                 case HttpVerb.Put:
                     result =
-                        await context.InternalHttpClient.PutAsync(context.Url, context.RequestContent).ConfigureAwait(false);
+                        await context.InnerHttpClient.PutAsync(context.Url, context.RequestContent).ConfigureAwait(false);
                     break;
                 case HttpVerb.Delete:
                     result =
                         await
-                            context.InternalHttpClient.DeleteAsync(context.Url).ConfigureAwait(false);
+                            context.InnerHttpClient.DeleteAsync(context.Url).ConfigureAwait(false);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(context.HttpVerb.ToString(), context.HttpVerb, null);
