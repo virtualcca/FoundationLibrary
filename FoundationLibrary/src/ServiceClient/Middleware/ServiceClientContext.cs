@@ -26,5 +26,19 @@ namespace ServiceClients.Middleware
         ///     返回的数据
         /// </summary>
         public HttpResponseMessage ResponseMessage { get; internal set; }
+
+        /// <summary>
+        ///     内部请求用的<see cref="HttpClient"/>实例
+        /// </summary>
+        internal HttpClient InternalHttpClient { get; }
+
+        /// <summary>
+        ///     创建ServiceClient上下文实例
+        /// </summary>
+        /// <param name="httpClient"></param>
+        internal ServiceClientContext(HttpClient httpClient)
+        {
+            InternalHttpClient = httpClient;
+        }
     }
 }
