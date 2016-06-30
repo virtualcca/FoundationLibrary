@@ -25,6 +25,6 @@ namespace ServiceClients.Middleware
         /// <summary>
         ///     返回的数据
         /// </summary>
-        public HttpResponseMessage ResponseMessage { get; set; }
+        public HttpResponseMessage ResponseMessage { get; internal set; }
     }
 }
