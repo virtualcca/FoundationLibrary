@@ -6,7 +6,7 @@ namespace ServiceClients.Middleware
     ///     默认的会话中间件
     ///     <remarks>该中间件应该位于处理管道的第一位</remarks>
     /// </summary>
-    public class TransitionMiddleware : ServiceClientMiddleware
+    internal class TransitionMiddleware : ServiceClientMiddleware
     {
         /// <summary>
         ///     初始化中间件
