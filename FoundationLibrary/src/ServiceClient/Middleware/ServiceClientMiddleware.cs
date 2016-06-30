@@ -1,4 +1,6 @@
-﻿namespace ServiceClients.Middleware
+﻿using System.Threading.Tasks;
+
+namespace ServiceClients.Middleware
 {
     /// <summary>
     ///     <see cref="ServiceClient" />的处理中间件
@@ -24,6 +26,6 @@
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public abstract void Invoke(ServiceClientContext context);
+        public abstract Task Invoke(ServiceClientContext context);
     }
 }

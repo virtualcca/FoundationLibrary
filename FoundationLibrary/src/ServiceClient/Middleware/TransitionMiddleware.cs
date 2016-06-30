@@ -1,4 +1,6 @@
-﻿namespace ServiceClients.Middleware
+﻿using System.Threading.Tasks;
+
+namespace ServiceClients.Middleware
 {
     /// <summary>
     ///     默认的会话中间件
@@ -19,9 +21,13 @@
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public override void Invoke(ServiceClientContext context)
+        public override Task Invoke(ServiceClientContext context)
         {
-            Next.Invoke(context);
+#if NET4
+            return Task.Factory.StartNew(() => Next.Invoke(context));
+#else
+            return Task.FromResult(Next.Invoke(context));
+#endif
         }
     }
 }
