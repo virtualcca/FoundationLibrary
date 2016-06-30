@@ -10,7 +10,7 @@ namespace ServiceClients.Middleware
     /// <remarks>
     ///     此中间件应该位于处理管道的最后一位
     /// </remarks>
-    public class SendRequestMiddleware : ServiceClientMiddleware
+    internal class SendRequestMiddleware : ServiceClientMiddleware
     {
         /// <summary>
         ///     初始化中间件
