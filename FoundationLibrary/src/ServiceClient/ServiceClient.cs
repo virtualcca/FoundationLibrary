@@ -7,7 +7,6 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-
 namespace ServiceClients
 {
     /// <summary>
@@ -62,6 +61,7 @@ namespace ServiceClients
         /// </summary>
         public ServiceClient()
         {
+
             InnerHttpClient = new HttpClient { Timeout = new TimeSpan(0, 0, 0, 30) };
         }
 
