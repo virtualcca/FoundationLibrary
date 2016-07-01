@@ -23,11 +23,7 @@ namespace ServiceClients.Middleware
         /// <returns></returns>
         public override Task Invoke(ServiceClientContext context)
         {
-#if NET4
-            return Task.Factory.StartNew(() => Next.Invoke(context));
-#else
-            return Task.FromResult(Next.Invoke(context));
-#endif
+            return Next.Invoke(context);
         }
     }
 }
