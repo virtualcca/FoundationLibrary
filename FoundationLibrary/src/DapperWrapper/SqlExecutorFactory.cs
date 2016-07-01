@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Data.SqlClient;
 
 namespace DapperWrapper
@@ -17,6 +18,13 @@ namespace DapperWrapper
         public IDbExecutor CreateExecutor()
         {
             var dbConnection = new SqlConnection(_connectionString);
+            return new SqlExecutor(dbConnection);
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public IDbExecutor CreateExecutor(string connectionString)
+        {
+            var dbConnection = new SqlConnection(connectionString);
             return new SqlExecutor(dbConnection);
         }
     }
