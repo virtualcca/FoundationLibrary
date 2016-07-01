@@ -227,15 +227,8 @@ namespace DapperWrapper
             IDbTransaction transaction = null, int? commandTimeout = null,
             CommandType? commandType = null)
         {
-            try
-            {
-                _dbConnection.Open();
-                return _dbConnection.QueryMultiple(sql, param, transaction, commandTimeout, commandType);
-            }
-            finally
-            {
-                _dbConnection.Close();
-            }
+            _dbConnection.Open();
+            return _dbConnection.QueryMultiple(sql, param, transaction, commandTimeout, commandType);
         }
 
         #if !NET4
@@ -435,15 +428,8 @@ namespace DapperWrapper
             IDbTransaction transaction = null, int? commandTimeout = null,
             CommandType? commandType = null)
         {
-            try
-            {
-                _dbConnection.Open();
-                return _dbConnection.QueryMultipleAsync(sql, param, transaction, commandTimeout, commandType);
-            }
-            finally
-            {
-                _dbConnection.Close();
-            }
+            _dbConnection.Open();
+            return _dbConnection.QueryMultipleAsync(sql, param, transaction, commandTimeout, commandType);
         }
         #endif
 
