@@ -1,10 +1,8 @@
 ﻿{
   "version": "1.0.0-*",
-
   "dependencies": {
     "Dapper": "1.42.0"
   },
-
   "frameworks": {
     "net45": {
       "frameworkAssemblies": {
@@ -34,5 +32,8 @@
       },
       "buildOptions": { "define": [ "NET4", "DOTNET" ] }
     }
+  },
+  "buildOptions": {
+    "optimize": true
   }
 }
