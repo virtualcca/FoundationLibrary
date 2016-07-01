@@ -1,5 +1,5 @@
 ﻿{
-  "projects": [ "src", "test" ],
+  "projects": [ "src", "test", "ServiceClient", "DapperWrapper" ],
   "sdk": {
     "version": ""
   }
