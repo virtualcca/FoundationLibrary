@@ -84,6 +84,11 @@ namespace DapperWrapper
             int? commandTimeout = null,
             CommandType? commandType = null);
 
+        SqlMapper.GridReader QueryMultiple(string sql, object param = null,
+            IDbTransaction transaction = null, int? commandTimeout = null,
+            CommandType? commandType = null);
+
+        #if !NET4
         Task<int> ExecuteAsync(
           string sql,
           object param = null,
@@ -158,13 +163,10 @@ namespace DapperWrapper
             int? commandTimeout = null,
             CommandType? commandType = null);
 
-        SqlMapper.GridReader QueryMultiple(string sql, object param = null,
-            IDbTransaction transaction = null, int? commandTimeout = null,
-            CommandType? commandType = null);
-
         Task<SqlMapper.GridReader> QueryMultipleAsync(string sql, object param = null,
             IDbTransaction transaction = null, int? commandTimeout = null,
             CommandType? commandType = null);
+        #endif
 
     }
 }
