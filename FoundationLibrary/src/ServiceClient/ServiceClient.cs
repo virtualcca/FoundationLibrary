@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using ServiceClients.Middleware;
 
 namespace ServiceClients
 {
@@ -20,6 +21,8 @@ namespace ServiceClients
     {
         #region [ Field ]
         private static ServiceClient _defaultInstance;
+
+        private ServiceClientMiddleware[] _middleware;
         #endregion
 
         #region [ Property ]
@@ -84,6 +87,26 @@ namespace ServiceClients
             {
                 BaseAddress = baseAddress
             };
+        }
+
+        public ServiceClient(IEnumerable<ServiceClientMiddleware> middlewares)
+        {
+            var count = middlewares.Count();
+            _middleware = new ServiceClientMiddleware[count + 2];
+            _middleware[count + 1] = new SendRequestMiddleware(null);
+            if (count <= 0)
+            {
+                _middleware[0] = new TransitionMiddleware(_middleware[1]);
+            }
+            else
+            {
+                
+                for (int i = 0; i < count; i++)
+                {
+
+                }
+            }
+
         }
 
         #endregion
