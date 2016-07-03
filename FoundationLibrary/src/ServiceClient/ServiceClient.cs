@@ -19,6 +19,7 @@ namespace ServiceClients
     {
         #region [ Field ]
         private static ServiceClient _defaultInstance;
+        private static readonly TimeSpan DefaultTimeout = new TimeSpan(0, 0, 30);
         #endregion
 
         #region [ Property ]
@@ -59,29 +60,38 @@ namespace ServiceClients
         /// <summary>
         ///     创建用于网络请求的<see cref="ServiceClient" />实例
         /// </summary>
-        public ServiceClient()
+        public ServiceClient() : this(new Uri(string.Empty), DefaultTimeout)
         {
-
-            InnerHttpClient = new HttpClient { Timeout = new TimeSpan(0, 0, 0, 30) };
         }
 
         /// <summary>
         ///     创建用于网络请求的<see cref="ServiceClient" />实例
         /// </summary>
         /// <param name="handler">Http消息处理程序</param>
-        public ServiceClient(HttpMessageHandler handler)
+        public ServiceClient(HttpMessageHandler handler) : this(new Uri(string.Empty), DefaultTimeout, handler)
         {
-            InnerHttpClient = new HttpClient(handler) { Timeout = new TimeSpan(0, 0, 0, 30) };
         }
 
         /// <summary>
         ///     创建用于网络请求的<see cref="ServiceClient" />实例
         /// </summary>
         /// <param name="baseAddress">请求地址的基地址</param>
-        public ServiceClient(Uri baseAddress)
+        public ServiceClient(Uri baseAddress) : this(baseAddress, DefaultTimeout)
         {
-            InnerHttpClient = new HttpClient
+        }
+
+        /// <summary>
+        ///     创建用于网络请求的<see cref="ServiceClient" />实例
+        /// </summary>
+        /// <param name="baseAddress"></param>
+        /// <param name="timeout"></param>
+        /// <param name="handler"></param>
+        public ServiceClient(Uri baseAddress, TimeSpan timeout, HttpMessageHandler handler = null)
+        {
+            handler = handler ?? new HttpClientHandler();
+            InnerHttpClient = new HttpClient(handler)
             {
+                Timeout = timeout,
                 BaseAddress = baseAddress
             };
         }
