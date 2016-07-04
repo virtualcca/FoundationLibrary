@@ -60,7 +60,7 @@ namespace ServiceClients
         /// <summary>
         ///     创建用于网络请求的<see cref="ServiceClient" />实例
         /// </summary>
-        public ServiceClient() : this(new Uri(string.Empty), DefaultTimeout)
+        public ServiceClient() : this(null, DefaultTimeout)
         {
         }
 
@@ -68,7 +68,7 @@ namespace ServiceClients
         ///     创建用于网络请求的<see cref="ServiceClient" />实例
         /// </summary>
         /// <param name="handler">Http消息处理程序</param>
-        public ServiceClient(HttpMessageHandler handler) : this(new Uri(string.Empty), DefaultTimeout, handler)
+        public ServiceClient(HttpMessageHandler handler) : this(null, DefaultTimeout, handler)
         {
         }
 
