@@ -53,6 +53,12 @@ namespace ServiceClients
         ///     异常日志记录委托
         /// </summary>
         public static Action<string, Dictionary<string, string>, Exception> ExceptionLogger { get; set; }
+
+        /// <summary>
+        ///     当Http返回的请求状态码大于400的时候是否抛出异常
+        ///     Default:true
+        /// </summary>
+        public bool IsThrow { get; set; }
         #endregion
 
         #region [ Ctor ]
@@ -89,6 +95,7 @@ namespace ServiceClients
         public ServiceClient(Uri baseAddress, TimeSpan timeout, HttpMessageHandler handler = null)
         {
             handler = handler ?? new HttpClientHandler();
+            IsThrow = true;
             InnerHttpClient = new HttpClient(handler)
             {
                 Timeout = timeout,
@@ -234,7 +241,8 @@ namespace ServiceClients
                         {"httpverb",httpVerb.ToString() },
                         {"url",url }
                     }, e);
-                throw;
+                if (IsThrow)
+                    throw;
             }
 
             return result;
