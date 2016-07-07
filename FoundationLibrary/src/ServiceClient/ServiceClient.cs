@@ -229,6 +229,9 @@ namespace ServiceClients
                     throw new ArgumentOutOfRangeException(httpVerb.ToString(), httpVerb, null);
             }
 
+            if (!IsThrow)
+                return result;
+
             try
             {
                 result.EnsureSuccessStatusCode();
@@ -241,8 +244,6 @@ namespace ServiceClients
                         {"httpverb",httpVerb.ToString() },
                         {"url",url }
                     }, e);
-                if (IsThrow)
-                    throw;
             }
 
             return result;
