@@ -12,11 +12,45 @@
       "buildOptions": { "define": [ "NET4", "DOTNET" ] }
     },
     "net45": {
-      "buildOptions": { "define": [ "NET45", "DOTNET" ] }
+      "buildOptions": { "define": [ "NET45", "DOTNET" ] },
+      "dependencies": {
+      }
+    },
+    "uap10.0": {
+      "buildOptions": { "define": [ "UWP" ] },
+      "dependencies": {
+        "System.Reflection": "4.1.0",
+        "System.Reflection.Extensions": "4.0.1",
+        "System.Collections": "4.0.10",
+        "System.Net.Http": "4.0.0",
+        "System.Linq": "4.0.0"
+      }
     }
   },
   "buildOptions": {
-    "optimize": true,
-    "xmlDoc": true
+    "xmlDoc": true,
+    "files": {
+      "lib/net45": "bin/Release/net45/ServiceClient.pdb"
+    },
+    "optimize": true
+  },
+  "configurations": {
+    "Debug": {
+      "buildOptions": {
+        "define": [ "DEBUG", "TRACE" ]
+      }
+    },
+    "Release": {
+      "buildOptions": {
+        "define": [ "RELEASE", "TRACE" ],
+        "optimize": true
+      }
+    }
+  },
+  "packOptions": {
+    "summary": "A restful http client",
+    "tags": [ "rest", "restful", "http" ],
+    "owners": [ "LeoLaw" ],
+    "requireLicenseAcceptance": false
   }
 }
