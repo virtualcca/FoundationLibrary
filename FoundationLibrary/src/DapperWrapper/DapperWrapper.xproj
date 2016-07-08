@@ -8,7 +8,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>e3686202-151c-493e-9a2a-e3b90b2a3f92</ProjectGuid>
     <RootNamespace>DapperWrapper</RootNamespace>
-    <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">..\..\artifacts\obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
+    <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">.\obj</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>
   </PropertyGroup>
   <PropertyGroup>
