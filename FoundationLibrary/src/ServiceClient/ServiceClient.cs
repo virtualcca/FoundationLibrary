@@ -274,17 +274,18 @@ namespace ServiceClients
                 }
                 else
                 {
-#if NET45
-                    var props = (from x in requestObj.GetType().GetRuntimeProperties()
-                                 select x).ToDictionary(
-                            GetPropertyAttrName,
-                            x => x.GetValue(requestObj) == null ? string.Empty : x.GetValue(requestObj).ToString());
-                    body = new FormUrlEncodedContent(props);
-#elif NET4
+
+#if NET4
                     var props = (from x in requestObj.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
                                  select x).ToDictionary(
                             GetPropertyAttrName,
                             x => x.GetValue(requestObj, null) == null ? string.Empty : x.GetValue(requestObj, null).ToString());
+                    body = new FormUrlEncodedContent(props);
+#else
+                    var props = (from x in requestObj.GetType().GetRuntimeProperties()
+                                 select x).ToDictionary(
+                           GetPropertyAttrName,
+                           x => x.GetValue(requestObj) == null ? string.Empty : x.GetValue(requestObj).ToString());
                     body = new FormUrlEncodedContent(props);
 #endif
                 }
