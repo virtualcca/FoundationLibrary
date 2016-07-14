@@ -93,6 +93,9 @@ namespace DapperWrapper
         dynamic QuerySingleOrDefault(string sql, object param = null,
             IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null);
 
+        T QuerySingleOrDefault<T>(string sql, object param = null,
+            IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+
         T QueryFirst<T>(string sql, object param = null,
             IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null);
 
