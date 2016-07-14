@@ -84,6 +84,27 @@ namespace DapperWrapper
             int? commandTimeout = null,
             CommandType? commandType = null);
 
+        T QuerySingle<T>(string sql, object param = null,
+            IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null);
+
+        dynamic QuerySingle(string sql, object param = null,
+            IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null);
+
+        dynamic QuerySingleOrDefault(string sql, object param = null,
+            IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null);
+
+        T QueryFirst<T>(string sql, object param = null,
+            IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null);
+
+        dynamic QueryFirst(string sql, object param = null,
+            IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null);
+
+        T QueryFirstOrDefault<T>(string sql, object param = null,
+            IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null);
+
+        dynamic QueryFirstOrDefault(string sql, object param = null,
+            IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null);
+
         SqlMapper.GridReader QueryMultiple(string sql, object param = null,
             IDbTransaction transaction = null, int? commandTimeout = null,
             CommandType? commandType = null);
@@ -162,6 +183,18 @@ namespace DapperWrapper
             string splitOn = "Id",
             int? commandTimeout = null,
             CommandType? commandType = null);
+
+        Task<T> QuerySingleAsync<T>(string sql, object param = null,
+            IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null);
+
+        Task<T> QuerySingleOrDefaultAsync<T>(string sql, object param = null,
+            IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null);
+
+        Task<T> QueryFirstAsync<T>(string sql, object param = null,
+            IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null);
+
+        Task<T> QueryFirstOrDefaultAsync<T>(string sql, object param = null,
+            IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null);
 
         Task<SqlMapper.GridReader> QueryMultipleAsync(string sql, object param = null,
             IDbTransaction transaction = null, int? commandTimeout = null,

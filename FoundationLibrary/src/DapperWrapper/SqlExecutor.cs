@@ -223,15 +223,168 @@ namespace DapperWrapper
             }
         }
 
-         public SqlMapper.GridReader QueryMultiple(string sql, object param = null,
-            IDbTransaction transaction = null, int? commandTimeout = null,
-            CommandType? commandType = null)
+        public T QuerySingle<T>(string sql, object param = null,
+            IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            try
+            {
+                _dbConnection.Open();
+                return _dbConnection.QuerySingle<T>(
+                    sql,
+                    param,
+                    transaction,
+                    commandTimeout,
+                    commandType);
+            }
+            finally
+            {
+                _dbConnection.Close();
+            }
+        }
+
+        public dynamic QuerySingle(string sql, object param = null,
+          IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            try
+            {
+                _dbConnection.Open();
+                return _dbConnection.QuerySingle(
+                    sql,
+                    param,
+                    transaction,
+                    commandTimeout,
+                    commandType);
+            }
+            finally
+            {
+                _dbConnection.Close();
+            }
+        }
+
+        public T QuerySingleOrDefault<T>(string sql, object param = null,
+            IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            try
+            {
+                _dbConnection.Open();
+                return _dbConnection.QuerySingleOrDefault<T>(
+                    sql,
+                    param,
+                    transaction,
+                    commandTimeout,
+                    commandType);
+            }
+            finally
+            {
+                _dbConnection.Close();
+            }
+        }
+
+        public dynamic QuerySingleOrDefault(string sql, object param = null,
+           IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            try
+            {
+                _dbConnection.Open();
+                return _dbConnection.QuerySingleOrDefault(
+                    sql,
+                    param,
+                    transaction,
+                    commandTimeout,
+                    commandType);
+            }
+            finally
+            {
+                _dbConnection.Close();
+            }
+        }
+
+        public T QueryFirst<T>(string sql, object param = null,
+           IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            try
+            {
+                _dbConnection.Open();
+                return _dbConnection.QueryFirst<T>(
+                    sql,
+                    param,
+                    transaction,
+                    commandTimeout,
+                    commandType);
+            }
+            finally
+            {
+                _dbConnection.Close();
+            }
+        }
+
+        public dynamic QueryFirst(string sql, object param = null,
+          IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            try
+            {
+                _dbConnection.Open();
+                return _dbConnection.QueryFirst(
+                    sql,
+                    param,
+                    transaction,
+                    commandTimeout,
+                    commandType);
+            }
+            finally
+            {
+                _dbConnection.Close();
+            }
+        }
+
+
+        public T QueryFirstOrDefault<T>(string sql, object param = null,
+            IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            try
+            {
+                _dbConnection.Open();
+                return _dbConnection.QueryFirstOrDefault<T>(
+                    sql,
+                    param,
+                    transaction,
+                    commandTimeout,
+                    commandType);
+            }
+            finally
+            {
+                _dbConnection.Close();
+            }
+        }
+
+        public dynamic QueryFirstOrDefault(string sql, object param = null,
+           IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            try
+            {
+                _dbConnection.Open();
+                return _dbConnection.QueryFirstOrDefault(
+                    sql,
+                    param,
+                    transaction,
+                    commandTimeout,
+                    commandType);
+            }
+            finally
+            {
+                _dbConnection.Close();
+            }
+        }
+
+        public SqlMapper.GridReader QueryMultiple(string sql, object param = null,
+           IDbTransaction transaction = null, int? commandTimeout = null,
+           CommandType? commandType = null)
         {
             _dbConnection.Open();
             return _dbConnection.QueryMultiple(sql, param, transaction, commandTimeout, commandType);
         }
 
-        #if !NET4
+#if !NET4
         public async Task<int> ExecuteAsync(string sql, object param = null, IDbTransaction transaction = null,
             int? commandTimeout = null,
             CommandType? commandType = null)
@@ -424,6 +577,83 @@ namespace DapperWrapper
             }
         }
 
+        public Task<T> QuerySingleAsync<T>(string sql, object param = null,
+           IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            try
+            {
+                _dbConnection.Open();
+                return _dbConnection.QuerySingleAsync<T>(
+                    sql,
+                    param,
+                    transaction,
+                    commandTimeout,
+                    commandType);
+            }
+            finally
+            {
+                _dbConnection.Close();
+            }
+        }
+
+        public Task<T> QuerySingleOrDefaultAsync<T>(string sql, object param = null,
+            IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            try
+            {
+                _dbConnection.Open();
+                return _dbConnection.QuerySingleOrDefaultAsync<T>(
+                    sql,
+                    param,
+                    transaction,
+                    commandTimeout,
+                    commandType);
+            }
+            finally
+            {
+                _dbConnection.Close();
+            }
+        }
+
+        public Task<T> QueryFirstAsync<T>(string sql, object param = null,
+           IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            try
+            {
+                _dbConnection.Open();
+                return _dbConnection.QueryFirstAsync<T>(
+                    sql,
+                    param,
+                    transaction,
+                    commandTimeout,
+                    commandType);
+            }
+            finally
+            {
+                _dbConnection.Close();
+            }
+        }
+
+
+        public Task<T> QueryFirstOrDefaultAsync<T>(string sql, object param = null,
+            IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            try
+            {
+                _dbConnection.Open();
+                return _dbConnection.QueryFirstOrDefaultAsync<T>(
+                    sql,
+                    param,
+                    transaction,
+                    commandTimeout,
+                    commandType);
+            }
+            finally
+            {
+                _dbConnection.Close();
+            }
+        }
+
         public Task<SqlMapper.GridReader> QueryMultipleAsync(string sql, object param = null,
             IDbTransaction transaction = null, int? commandTimeout = null,
             CommandType? commandType = null)
@@ -431,7 +661,7 @@ namespace DapperWrapper
             _dbConnection.Open();
             return _dbConnection.QueryMultipleAsync(sql, param, transaction, commandTimeout, commandType);
         }
-        #endif
+#endif
 
         public void Dispose()
         {

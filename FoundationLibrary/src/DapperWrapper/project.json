@@ -1,7 +1,7 @@
-﻿{
+{
   "version": "1.0.0-*",
   "dependencies": {
-    "Dapper": "1.42.0"
+    "Dapper": "1.50.1"
   },
   "frameworks": {
     "net45": {
