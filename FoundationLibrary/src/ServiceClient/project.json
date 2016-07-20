@@ -2,7 +2,7 @@
   "version": "1.0.0-*",
   "dependencies": {
     "Microsoft.Net.Http": "2.2.29",
-    "Newtonsoft.Json": "8.0.3"
+    "Newtonsoft.Json": "6.0.8"
   },
   "frameworks": {
     "net4": {
