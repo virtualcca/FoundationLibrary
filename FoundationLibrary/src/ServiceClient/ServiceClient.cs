@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 namespace ServiceClients
@@ -198,31 +199,42 @@ namespace ServiceClients
 
         private async Task<HttpResponseMessage> SendRequest(string url, HttpVerb httpVerb, HttpContent body)
         {
+            var cts = new CancellationTokenSource();
+
             HttpResponseMessage result;
-            switch (httpVerb)
+            try
             {
-                case HttpVerb.Get:
-                    result =
-                        await
-                            InnerHttpClient.GetAsync(url).ConfigureAwait(false);
-                    break;
-                case HttpVerb.Post:
-                    result =
-                        await
-                            InnerHttpClient.PostAsync(url, body).ConfigureAwait(false);
-                    break;
-                case HttpVerb.Put:
-                    result =
-                        await InnerHttpClient.PutAsync(url, body).ConfigureAwait(false);
-                    break;
-                case HttpVerb.Delete:
-                    result =
-                        await
-                            InnerHttpClient.DeleteAsync(url).ConfigureAwait(false);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(httpVerb.ToString(), httpVerb, null);
+                switch (httpVerb)
+                {
+                    case HttpVerb.Get:
+                        result =
+                            await
+                                InnerHttpClient.GetAsync(url, cts.Token).ConfigureAwait(false);
+                        break;
+                    case HttpVerb.Post:
+                        result =
+                            await
+                                InnerHttpClient.PostAsync(url, body, cts.Token).ConfigureAwait(false);
+                        break;
+                    case HttpVerb.Put:
+                        result =
+                            await InnerHttpClient.PutAsync(url, body, cts.Token).ConfigureAwait(false);
+                        break;
+                    case HttpVerb.Delete:
+                        result =
+                            await
+                                InnerHttpClient.DeleteAsync(url, cts.Token).ConfigureAwait(false);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(httpVerb.ToString(), httpVerb, null);
+                }
             }
+            catch (Exception e)
+            {
+                ExceptionLogger?.Invoke(ExceptionData.LogRequest(e, url, httpVerb, await body.ReadAsStringAsync()));
+                throw;
+            }
+
 
             if (!IsThrow)
                 return result;

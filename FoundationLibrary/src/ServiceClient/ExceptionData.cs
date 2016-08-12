@@ -48,6 +48,25 @@ namespace ServiceClients
         }
 
         /// <summary>
+        ///     记录确认状态时候的信息
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="url"></param>
+        /// <param name="httpVerb"></param>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
+        public static ExceptionData LogRequest(Exception exception, string url, HttpVerb httpVerb, string parameter)
+        {
+            var ed = new ExceptionData { Exception = exception, Message = "确认Http状态码时异常" };
+            ed.Data.Add("url", url);
+            ed.Data.Add("httpverb", httpVerb.ToString());
+            ed.Data.Add("parameter", parameter);
+            ed.Data.Add("type", "request");
+            return ed;
+
+        }
+
+        /// <summary>
         ///     记录反序列化时候的信息
         /// </summary>
         /// <param name="exception"></param>
