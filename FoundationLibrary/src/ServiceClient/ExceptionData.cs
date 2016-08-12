@@ -57,11 +57,32 @@ namespace ServiceClients
         /// <returns></returns>
         public static ExceptionData LogRequest(Exception exception, string url, HttpVerb httpVerb, string parameter)
         {
-            var ed = new ExceptionData { Exception = exception, Message = "确认Http状态码时异常" };
+            var ed = new ExceptionData { Exception = exception, Message = "请求时候的未知异常" };
             ed.Data.Add("url", url);
             ed.Data.Add("httpverb", httpVerb.ToString());
             ed.Data.Add("parameter", parameter);
             ed.Data.Add("type", "request");
+            ed.Data.Add("errorType", "unknown");
+            return ed;
+
+        }
+
+        /// <summary>
+        ///     记录确认状态时候的信息
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="url"></param>
+        /// <param name="httpVerb"></param>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
+        public static ExceptionData LogRequestTimeout(Exception exception, string url, HttpVerb httpVerb, string parameter)
+        {
+            var ed = new ExceptionData { Exception = exception, Message = "请求时候的超时异常" };
+            ed.Data.Add("url", url);
+            ed.Data.Add("httpverb", httpVerb.ToString());
+            ed.Data.Add("parameter", parameter);
+            ed.Data.Add("type", "request");
+            ed.Data.Add("errorType","timeout");
             return ed;
 
         }

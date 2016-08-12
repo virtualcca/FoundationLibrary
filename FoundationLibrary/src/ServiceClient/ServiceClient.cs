@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -39,11 +38,7 @@ namespace ServiceClients
         /// <summary>
         ///     超时时间
         /// </summary>
-        public TimeSpan Timeout
-        {
-            get { return InnerHttpClient.Timeout; }
-            set { InnerHttpClient.Timeout = value; }
-        }
+        public TimeSpan Timeout { get; set; }
 
         /// <summary>
         ///     默认Http请求头
@@ -97,9 +92,9 @@ namespace ServiceClients
         {
             handler = handler ?? new HttpClientHandler();
             IsThrow = true;
+            Timeout = timeout;
             InnerHttpClient = new HttpClient(handler)
             {
-                Timeout = timeout,
                 BaseAddress = baseAddress
             };
         }
@@ -200,7 +195,7 @@ namespace ServiceClients
         private async Task<HttpResponseMessage> SendRequest(string url, HttpVerb httpVerb, HttpContent body)
         {
             var cts = new CancellationTokenSource();
-
+            cts.CancelAfter(Timeout);
             HttpResponseMessage result;
             try
             {
@@ -228,6 +223,13 @@ namespace ServiceClients
                     default:
                         throw new ArgumentOutOfRangeException(httpVerb.ToString(), httpVerb, null);
                 }
+            }
+            catch (TaskCanceledException te)
+            {
+                ExceptionLogger?.Invoke(cts.Token.IsCancellationRequested
+                    ? ExceptionData.LogRequestTimeout(te, url, httpVerb, await body.ReadAsStringAsync())
+                    : ExceptionData.LogRequest(te, url, httpVerb, await body.ReadAsStringAsync()));
+                throw;
             }
             catch (Exception e)
             {
