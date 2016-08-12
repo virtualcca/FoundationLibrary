@@ -52,7 +52,7 @@ namespace ServiceClients
         /// <summary>
         ///     异常日志记录委托
         /// </summary>
-        public static Action<string, Dictionary<string, string>, Exception> ExceptionLogger { get; set; }
+        public static Action<ExceptionData> ExceptionLogger { get; set; }
 
         /// <summary>
         ///     当Http返回的请求状态码大于400的时候是否抛出异常
@@ -130,12 +130,7 @@ namespace ServiceClients
                 }
                 catch (Exception e)
                 {
-                    ExceptionLogger?.Invoke("Http请求反序列化异常", new Dictionary<string, string>
-                    {
-                        {"result",result },
-                        {"httpverb",method.ToString() },
-                        {"url",url }
-                    }, e);
+                    ExceptionLogger?.Invoke(ExceptionData.LogDeserialize(e, url, method, result));
                     throw;
                 }
 
@@ -239,11 +234,7 @@ namespace ServiceClients
             catch (Exception e)
             {
                 if ((int)result.StatusCode >= 500)
-                    ExceptionLogger?.Invoke("Http请求响应状态异常.", new Dictionary<string, string>
-                    {
-                        {"httpverb",httpVerb.ToString() },
-                        {"url",url }
-                    }, e);
+                    ExceptionLogger?.Invoke(ExceptionData.LogEnsureSuccessed(e, url, httpVerb, await body.ReadAsStringAsync()));
             }
 
             return result;
