@@ -34,14 +34,12 @@ namespace ServiceClients
         /// <param name="exception"></param>
         /// <param name="url"></param>
         /// <param name="httpVerb"></param>
-        /// <param name="parameter"></param>
         /// <returns></returns>
-        public static ExceptionData LogEnsureSuccessed(Exception exception, string url, HttpVerb httpVerb, string parameter)
+        public static ExceptionData LogEnsureSuccessed(Exception exception, string url, HttpVerb httpVerb)
         {
             var ed = new ExceptionData { Exception = exception,Message = "确认Http状态码时异常"};
             ed.Data.Add("url", url);
             ed.Data.Add("httpverb", httpVerb.ToString());
-            ed.Data.Add("parameter", parameter);
             ed.Data.Add("type","ensuresuccessed");
             return ed;
 
@@ -53,14 +51,12 @@ namespace ServiceClients
         /// <param name="exception"></param>
         /// <param name="url"></param>
         /// <param name="httpVerb"></param>
-        /// <param name="parameter"></param>
         /// <returns></returns>
-        public static ExceptionData LogRequest(Exception exception, string url, HttpVerb httpVerb, string parameter)
+        public static ExceptionData LogRequest(Exception exception, string url, HttpVerb httpVerb)
         {
             var ed = new ExceptionData { Exception = exception, Message = "请求时候的未知异常" };
             ed.Data.Add("url", url);
             ed.Data.Add("httpverb", httpVerb.ToString());
-            ed.Data.Add("parameter", parameter);
             ed.Data.Add("type", "request");
             ed.Data.Add("errorType", "unknown");
             return ed;
@@ -73,14 +69,12 @@ namespace ServiceClients
         /// <param name="exception"></param>
         /// <param name="url"></param>
         /// <param name="httpVerb"></param>
-        /// <param name="parameter"></param>
         /// <returns></returns>
-        public static ExceptionData LogRequestTimeout(Exception exception, string url, HttpVerb httpVerb, string parameter)
+        public static ExceptionData LogRequestTimeout(Exception exception, string url, HttpVerb httpVerb)
         {
             var ed = new ExceptionData { Exception = exception, Message = "请求时候的超时异常" };
             ed.Data.Add("url", url);
             ed.Data.Add("httpverb", httpVerb.ToString());
-            ed.Data.Add("parameter", parameter);
             ed.Data.Add("type", "request");
             ed.Data.Add("errorType","timeout");
             return ed;

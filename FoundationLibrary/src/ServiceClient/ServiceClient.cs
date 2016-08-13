@@ -227,13 +227,13 @@ namespace ServiceClients
             catch (TaskCanceledException te)
             {
                 ExceptionLogger?.Invoke(cts.Token.IsCancellationRequested
-                    ? ExceptionData.LogRequestTimeout(te, url, httpVerb, await body.ReadAsStringAsync())
-                    : ExceptionData.LogRequest(te, url, httpVerb, await body.ReadAsStringAsync()));
+                    ? ExceptionData.LogRequestTimeout(te, url, httpVerb)
+                    : ExceptionData.LogRequest(te, url, httpVerb));
                 throw;
             }
             catch (Exception e)
             {
-                ExceptionLogger?.Invoke(ExceptionData.LogRequest(e, url, httpVerb, await body.ReadAsStringAsync()));
+                ExceptionLogger?.Invoke(ExceptionData.LogRequest(e, url, httpVerb));
                 throw;
             }
 
@@ -248,7 +248,7 @@ namespace ServiceClients
             catch (Exception e)
             {
                 if ((int)result.StatusCode >= 500)
-                    ExceptionLogger?.Invoke(ExceptionData.LogEnsureSuccessed(e, url, httpVerb, await body.ReadAsStringAsync()));
+                    ExceptionLogger?.Invoke(ExceptionData.LogEnsureSuccessed(e, url, httpVerb));
             }
 
             return result;
