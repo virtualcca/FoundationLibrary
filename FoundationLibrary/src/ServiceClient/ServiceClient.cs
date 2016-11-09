@@ -188,6 +188,17 @@ namespace ServiceClients
             }
         }
 
+        /// <summary>
+        ///     透过<see cref="HttpRequestMessage"/>进行原始的Http请求并获取未处理的<see cref="HttpResponseMessage"/>
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public Task<HttpResponseMessage> SendAsync(HttpRequestMessage request)
+        {
+            var cts = new CancellationTokenSource();
+            cts.CancelAfter(Timeout);
+            return InnerHttpClient.SendAsync(request, cts.Token);
+        }
         #endregion
 
         #region [ Private Method ]

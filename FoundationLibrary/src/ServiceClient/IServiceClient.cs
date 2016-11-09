@@ -59,5 +59,12 @@ namespace ServiceClients
         /// <param name="content">自定义请求Http信息</param>
         /// <returns>返回字符串表示的结果</returns>
         Task<string> RequestAsync(string url, HttpVerb method, HttpContent content);
+
+        /// <summary>
+        ///     透过<see cref="HttpRequestMessage"/>进行原始的Http请求并获取未处理的<see cref="HttpResponseMessage"/>
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<HttpResponseMessage> SendAsync(HttpRequestMessage request);
     }
 }
