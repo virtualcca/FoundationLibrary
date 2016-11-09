@@ -16,7 +16,7 @@ namespace ServiceClients
         /// <summary>
         ///     异常相关数据
         /// </summary>
-        public Dictionary<string, string> Data { get; private set; }
+        public Dictionary<string, string> Data { get; }
 
         /// <summary>
         ///     信息
@@ -37,10 +37,10 @@ namespace ServiceClients
         /// <returns></returns>
         public static ExceptionData LogEnsureSuccessed(Exception exception, string url, HttpVerb httpVerb)
         {
-            var ed = new ExceptionData { Exception = exception,Message = "确认Http状态码时异常"};
+            var ed = new ExceptionData { Exception = exception, Message = "确认Http状态码时异常" };
             ed.Data.Add("url", url);
             ed.Data.Add("httpverb", httpVerb.ToString());
-            ed.Data.Add("type","ensuresuccessed");
+            ed.Data.Add("type", "ensuresuccessed");
             return ed;
 
         }
@@ -76,7 +76,7 @@ namespace ServiceClients
             ed.Data.Add("url", url);
             ed.Data.Add("httpverb", httpVerb.ToString());
             ed.Data.Add("type", "request");
-            ed.Data.Add("errorType","timeout");
+            ed.Data.Add("errorType", "timeout");
             return ed;
 
         }
