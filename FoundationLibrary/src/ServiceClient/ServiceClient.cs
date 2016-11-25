@@ -149,7 +149,7 @@ namespace ServiceClients
 
                 var response = await SendRequest(url, method, body).ConfigureAwait(false);
 
-                return await response.Content.ReadAsStringAsync();
+                return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             }
         }
 
