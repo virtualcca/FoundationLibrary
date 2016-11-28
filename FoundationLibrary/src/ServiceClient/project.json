@@ -2,13 +2,21 @@
   "version": "1.2.0-*",
   "authors": [ "LeoLaw" ],
   "dependencies": {
-    "Newtonsoft.Json": "9.0.1"
+    "Newtonsoft.Json": "9.0.1",
+    "System.Net.Http": "4.3.0"
   },
   "frameworks": {
     "netstandard11": {
-      "buildOptions": { "define": [ "NETSTANDARD", "NETCORE", "DOTNET" ] },
-      "dependencies": {
-        "System.Net.Http": "4.3.0"
+      "buildOptions": { "define": [ "NETSTANDARD", "NETCORE", "DOTNET" ] }
+    },
+    "net46": {
+      "buildOptions": {
+        "define": [ "NET46", "DOTNET" ]
+      }
+    },
+    "net45": {
+      "buildOptions": {
+        "define": [ "NET46", "DOTNET" ]
       }
     }
   },
@@ -21,7 +29,8 @@
     "Release": {
       "buildOptions": {
         "define": [ "RELEASE", "TRACE" ],
-        "optimize": true
+        "optimize": true,
+        "xmlDoc": true
       }
     }
   },
