@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -113,25 +114,16 @@ namespace ServiceClients
         /// <returns>结果反序列化为<typeparamref cref="T" />后返回</returns>
         public async Task<T> RequestAsync<T>(string url, HttpVerb method, object requestObj)
         {
-            using (var body = FormatParameter(requestObj, method))
+            var result = await RequestAsync(url, method, requestObj).ConfigureAwait(false);
+            try
             {
-                url = await FormatUrl(url, body, method).ConfigureAwait(false);
-
-                var response = await SendRequest(url, method, body).ConfigureAwait(false);
-
-                var result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                try
-                {
-                    return JsonConvert.DeserializeObject<T>(result);
-                }
-                catch (Exception e)
-                {
-                    ExceptionLogger?.Invoke(ExceptionData.LogDeserialize(e, url, method, result));
-                    throw;
-                }
-
+                return JsonConvert.DeserializeObject<T>(result);
             }
-
+            catch (Exception e)
+            {
+                ExceptionLogger?.Invoke(ExceptionData.LogDeserialize(e, url, method, result));
+                throw;
+            }
         }
 
         /// <summary>
@@ -143,13 +135,18 @@ namespace ServiceClients
         /// <returns>返回字符串表示的结果</returns>
         public async Task<string> RequestAsync(string url, HttpVerb method, object requestObj)
         {
-            using (var body = FormatParameter(requestObj, method))
+            var body = FormatParameter(requestObj, method);
+            url = FormatUrl(url, requestObj, method);
+
+            var response = await SendRequest(url, method, body).ConfigureAwait(false);
+
+            try
             {
-                url = await FormatUrl(url, body, method).ConfigureAwait(false);
-
-                var response = await SendRequest(url, method, body).ConfigureAwait(false);
-
                 return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            }
+            finally
+            {
+                body?.Dispose();
             }
         }
 
@@ -163,13 +160,16 @@ namespace ServiceClients
         /// <returns>结果反序列化为<typeparamref cref="T" />后返回</returns>
         public async Task<T> RequestAsync<T>(string url, HttpVerb method, HttpContent content)
         {
-            using (content)
+            var result = await RequestAsync(url, method, content).ConfigureAwait(false);
+            try
             {
-                var response = await SendRequest(url, method, content).ConfigureAwait(false);
-                var result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 return JsonConvert.DeserializeObject<T>(result);
             }
-
+            catch (Exception e)
+            {
+                ExceptionLogger?.Invoke(ExceptionData.LogDeserialize(e, url, method, result));
+                throw;
+            }
         }
 
         /// <summary>
@@ -181,10 +181,14 @@ namespace ServiceClients
         /// <returns>返回字符串表示的结果</returns>
         public async Task<string> RequestAsync(string url, HttpVerb method, HttpContent content)
         {
-            using (content)
+            try
             {
                 var response = await SendRequest(url, method, content).ConfigureAwait(false);
                 return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            }
+            finally
+            {
+                content?.Dispose();
             }
         }
 
@@ -265,13 +269,25 @@ namespace ServiceClients
             return result;
         }
 
-        private static async Task<string> FormatUrl(string url, HttpContent body, HttpVerb method)
+        private static string FormatUrl(string url, object requestObj, HttpVerb method)
         {
             if (method == HttpVerb.Get || method == HttpVerb.Delete)
             {
-                var paramater = await body.ReadAsStringAsync().ConfigureAwait(false) ?? string.Empty;
-                if (string.IsNullOrEmpty(paramater))
+                if (requestObj == null)
                     return url;
+#if NET4
+                var props = (from x in requestObj.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                             select x).ToDictionary(
+                        GetPropertyAttrName,
+                        x => x.GetValue(requestObj, null) == null ? string.Empty : x.GetValue(requestObj, null).ToString());
+#else
+                    var props = (from x in requestObj.GetType().GetRuntimeProperties()
+                                 select x).ToDictionary(
+                           GetPropertyAttrName,
+                           x => x.GetValue(requestObj) == null ? string.Empty : x.GetValue(requestObj).ToString());
+#endif
+                var paramater = GetNameValueCollectionString(props);
+
                 return url.Contains("?")
                     ? $"{url}&{paramater}"
                     : $"{url}?{paramater}";
@@ -282,33 +298,16 @@ namespace ServiceClients
         private static HttpContent FormatParameter(object requestObj, HttpVerb method)
         {
             HttpContent body;
-            if (requestObj != null)
+            if (method != HttpVerb.Get && method != HttpVerb.Delete)
             {
-                if (method != HttpVerb.Get && method != HttpVerb.Delete)
-                {
+                if (requestObj != null)
                     body = new StringContent(JsonConvert.SerializeObject(requestObj), Encoding.UTF8, "application/json");
-                }
                 else
-                {
-
-#if NET4
-                    var props = (from x in requestObj.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                                 select x).ToDictionary(
-                            GetPropertyAttrName,
-                            x => x.GetValue(requestObj, null) == null ? string.Empty : x.GetValue(requestObj, null).ToString());
-                    body = new FormUrlEncodedContent(props);
-#else
-                    var props = (from x in requestObj.GetType().GetRuntimeProperties()
-                                 select x).ToDictionary(
-                           GetPropertyAttrName,
-                           x => x.GetValue(requestObj) == null ? string.Empty : x.GetValue(requestObj).ToString());
-                    body = new FormUrlEncodedContent(props);
-#endif
-                }
+                    body = new StringContent(string.Empty);
             }
             else
             {
-                body = new StringContent(string.Empty);
+                body = null;
             }
             return body;
         }
@@ -338,6 +337,30 @@ namespace ServiceClients
 
             return attrName.Equals(string.Empty) ? prop.Name : attrName;
 #endif
+        }
+
+        private static string GetNameValueCollectionString(IEnumerable<KeyValuePair<string, string>> nameValueCollection)
+        {
+            if (nameValueCollection == null)
+                return string.Empty;
+            var stringBuilder = new StringBuilder();
+            foreach (var nameValue in nameValueCollection)
+            {
+                if (stringBuilder.Length > 0)
+                    stringBuilder.Append('&');
+                stringBuilder.Append(Encode(nameValue.Key));
+                stringBuilder.Append('=');
+                stringBuilder.Append(Encode(nameValue.Value));
+            }
+            return stringBuilder.ToString();
+        }
+
+
+        private static string Encode(string data)
+        {
+            if (string.IsNullOrEmpty(data))
+                return string.Empty;
+            return Uri.EscapeDataString(data).Replace("%20", "+");
         }
 
         #endregion
