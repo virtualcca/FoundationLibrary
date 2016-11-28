@@ -335,17 +335,10 @@ namespace ServiceClients
             {
                 if (requestObj == null)
                     return url;
-#if NET4
-                var props = (from x in requestObj.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                var props = (from x in requestObj.GetType().GetRuntimeProperties()
                              select x).ToDictionary(
-                        GetPropertyAttrName,
-                        x => x.GetValue(requestObj, null) == null ? string.Empty : x.GetValue(requestObj, null).ToString());
-#else
-                    var props = (from x in requestObj.GetType().GetRuntimeProperties()
-                                 select x).ToDictionary(
-                           GetPropertyAttrName,
-                           x => x.GetValue(requestObj) == null ? string.Empty : x.GetValue(requestObj).ToString());
-#endif
+                                           GetPropertyAttrName,
+                                           x => x.GetValue(requestObj) == null ? string.Empty : x.GetValue(requestObj).ToString());
                 var paramater = GetNameValueCollectionString(props);
 
                 return url.Contains("?")
