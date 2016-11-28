@@ -112,9 +112,72 @@ namespace ServiceClients
         /// <param name="method">Http请求谓词</param>
         /// <param name="requestObj">请求参数</param>
         /// <returns>结果反序列化为<typeparamref cref="T" />后返回</returns>
-        public async Task<T> RequestAsync<T>(string url, HttpVerb method, object requestObj)
+        public Task<T> RequestAsync<T>(string url, HttpVerb method, object requestObj)
         {
-            var result = await RequestAsync(url, method, requestObj).ConfigureAwait(false);
+            return RequestAsync<T>(url, method, requestObj, null);
+        }
+
+        /// <summary>
+        ///     通过Http请求数据
+        /// </summary>
+        /// <param name="url">请求地址Url</param>
+        /// <param name="method">Http请求谓词</param>
+        /// <param name="requestObj">请求参数</param>
+        /// <returns>返回字符串表示的结果</returns>
+        public Task<string> RequestAsync(string url, HttpVerb method, object requestObj)
+        {
+            return RequestAsync(url, method, requestObj, null);
+        }
+
+        /// <summary>
+        ///     通过Http请求数据
+        /// </summary>
+        /// <typeparam name="T">返回结果的类型</typeparam>
+        /// <param name="url">请求地址Url</param>
+        /// <param name="method">Http请求谓词</param>
+        /// <param name="content">自定义请求Http信息</param>
+        /// <returns>结果反序列化为<typeparamref cref="T" />后返回</returns>
+        public Task<T> RequestAsync<T>(string url, HttpVerb method, HttpContent content)
+        {
+            return RequestAsync<T>(url, method, content, null);
+        }
+
+        /// <summary>
+        ///     通过Http请求数据
+        /// </summary>
+        /// <param name="url">请求地址Url</param>
+        /// <param name="method">Http请求谓词</param>
+        /// <param name="content">自定义请求Http信息</param>
+        /// <returns>返回字符串表示的结果</returns>
+        public Task<string> RequestAsync(string url, HttpVerb method, HttpContent content)
+        {
+            return RequestAsync(url, method, content, null);
+        }
+
+        /// <summary>
+        ///     透过<see cref="HttpRequestMessage"/>进行原始的Http请求并获取未处理的<see cref="HttpResponseMessage"/>
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public Task<HttpResponseMessage> SendAsync(HttpRequestMessage request)
+        {
+            var cts = new CancellationTokenSource();
+            cts.CancelAfter(Timeout);
+            return InnerHttpClient.SendAsync(request, cts.Token);
+        }
+
+        /// <summary>
+        ///     通过Http请求数据
+        /// </summary>
+        /// <typeparam name="T">返回结果的类型</typeparam>
+        /// <param name="url">请求地址Url</param>
+        /// <param name="method">Http请求谓词</param>
+        /// <param name="requestObj">请求参数</param>
+        /// <param name="cts">请求取消令牌</param>
+        /// <returns></returns>
+        public async Task<T> RequestAsync<T>(string url, HttpVerb method, object requestObj, CancellationTokenSource cts)
+        {
+            var result = await RequestAsync(url, method, requestObj, cts).ConfigureAwait(false);
             try
             {
                 return JsonConvert.DeserializeObject<T>(result);
@@ -132,8 +195,9 @@ namespace ServiceClients
         /// <param name="url">请求地址Url</param>
         /// <param name="method">Http请求谓词</param>
         /// <param name="requestObj">请求参数</param>
-        /// <returns>返回字符串表示的结果</returns>
-        public async Task<string> RequestAsync(string url, HttpVerb method, object requestObj)
+        /// <param name="cts">请求取消令牌</param>
+        /// <returns></returns>
+        public async Task<string> RequestAsync(string url, HttpVerb method, object requestObj, CancellationTokenSource cts)
         {
             var body = FormatParameter(requestObj, method);
             url = FormatUrl(url, requestObj, method);
@@ -150,6 +214,8 @@ namespace ServiceClients
             }
         }
 
+
+
         /// <summary>
         ///     通过Http请求数据
         /// </summary>
@@ -157,8 +223,10 @@ namespace ServiceClients
         /// <param name="url">请求地址Url</param>
         /// <param name="method">Http请求谓词</param>
         /// <param name="content">自定义请求Http信息</param>
-        /// <returns>结果反序列化为<typeparamref cref="T" />后返回</returns>
-        public async Task<T> RequestAsync<T>(string url, HttpVerb method, HttpContent content)
+        /// <param name="cts">请求取消令牌</param>
+        /// <returns></returns>
+        public async Task<T> RequestAsync<T>(string url, HttpVerb method, HttpContent content,
+            CancellationTokenSource cts)
         {
             var result = await RequestAsync(url, method, content).ConfigureAwait(false);
             try
@@ -178,12 +246,13 @@ namespace ServiceClients
         /// <param name="url">请求地址Url</param>
         /// <param name="method">Http请求谓词</param>
         /// <param name="content">自定义请求Http信息</param>
+        /// <param name="cts">请求取消令牌</param>
         /// <returns>返回字符串表示的结果</returns>
-        public async Task<string> RequestAsync(string url, HttpVerb method, HttpContent content)
+        public async Task<string> RequestAsync(string url, HttpVerb method, HttpContent content, CancellationTokenSource cts)
         {
             try
             {
-                var response = await SendRequest(url, method, content).ConfigureAwait(false);
+                var response = await SendRequest(url, method, content, cts).ConfigureAwait(false);
                 return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             }
             finally
@@ -192,24 +261,15 @@ namespace ServiceClients
             }
         }
 
-        /// <summary>
-        ///     透过<see cref="HttpRequestMessage"/>进行原始的Http请求并获取未处理的<see cref="HttpResponseMessage"/>
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        public Task<HttpResponseMessage> SendAsync(HttpRequestMessage request)
-        {
-            var cts = new CancellationTokenSource();
-            cts.CancelAfter(Timeout);
-            return InnerHttpClient.SendAsync(request, cts.Token);
-        }
+
         #endregion
 
         #region [ Private Method ]
 
-        private async Task<HttpResponseMessage> SendRequest(string url, HttpVerb httpVerb, HttpContent body)
+        private async Task<HttpResponseMessage> SendRequest(string url, HttpVerb httpVerb, HttpContent body, CancellationTokenSource cts = null)
         {
-            var cts = new CancellationTokenSource();
+            if (cts == null)
+                cts = new CancellationTokenSource();
             cts.CancelAfter(Timeout);
             HttpResponseMessage result;
             try
