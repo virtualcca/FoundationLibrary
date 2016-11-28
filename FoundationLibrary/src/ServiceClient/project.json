@@ -2,21 +2,31 @@
   "version": "1.2.1-*",
   "authors": [ "LeoLaw" ],
   "dependencies": {
-    "Newtonsoft.Json": "9.0.1",
-    "System.Net.Http": "4.3.0"
+    "Newtonsoft.Json": "9.0.1"
   },
   "frameworks": {
-    "netstandard11": {
-      "buildOptions": { "define": [ "NETSTANDARD", "NETCORE", "DOTNET" ] }
+    "netstandard13": {
+      "buildOptions": {
+        "define": [ "NETSTANDARD", "NETCORE", "DOTNET" ]
+      },
+      "dependencies": {
+        "System.Net.Http": "4.3.0"
+      }
     },
     "net46": {
       "buildOptions": {
         "define": [ "NET46", "DOTNET" ]
+      },
+      "dependencies": {
+        "System.Net.Http": "4.0.0"
       }
     },
     "net45": {
       "buildOptions": {
-        "define": [ "NET46", "DOTNET" ]
+        "define": [ "NET45", "DOTNET" ]
+      },
+      "dependencies": {
+        "System.Net.Http": "4.0.0"
       }
     }
   },
