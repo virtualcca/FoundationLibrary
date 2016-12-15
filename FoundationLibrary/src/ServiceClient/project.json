@@ -31,10 +31,11 @@
     },
     "net40": {
       "buildOptions": {
-        "define": [ "NET45", "DOTNET" ]
+        "define": [ "NET4", "DOTNET" ]
       },
       "dependencies": {
-        "Microsoft.Net.Http": "2.2.29"
+        "Microsoft.Net.Http": "2.2.29",
+        "Microsoft.Bcl.Async": "1.0.168"
       }
     }
   },
