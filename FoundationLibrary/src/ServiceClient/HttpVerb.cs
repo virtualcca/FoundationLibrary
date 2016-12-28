@@ -24,5 +24,10 @@
         /// DELETE
         /// </summary>
         Delete,
+
+        /// <summary>
+        /// Patch
+        /// </summary>
+        Patch,
     }
 }

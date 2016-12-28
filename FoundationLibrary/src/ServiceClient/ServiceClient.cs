@@ -290,6 +290,9 @@ namespace ServiceClients
                         result =
                             await InnerHttpClient.PutAsync(url, body, cts.Token).ConfigureAwait(false);
                         break;
+                    case HttpVerb.Patch:
+                        result = await PatchAsync(url, body, cts.Token).ConfigureAwait(false);
+                        break;
                     case HttpVerb.Delete:
                         result =
                             await
@@ -327,6 +330,14 @@ namespace ServiceClients
             }
 
             return result;
+        }
+
+        private Task<HttpResponseMessage> PatchAsync(string requestUri, HttpContent content, CancellationToken cancellationToken)
+        {
+            return InnerHttpClient.SendAsync(new HttpRequestMessage(new HttpMethod("PATCH"), requestUri)
+            {
+                Content = content
+            }, cancellationToken);
         }
 
         private static string FormatUrl(string url, object requestObj, HttpVerb method)
