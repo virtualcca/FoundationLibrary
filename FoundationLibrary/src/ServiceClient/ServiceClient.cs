@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -307,7 +308,10 @@ namespace ServiceClients
                 ExceptionLogger?.Invoke(cts.Token.IsCancellationRequested
                     ? ExceptionData.LogRequestTimeout(te, url, httpVerb)
                     : ExceptionData.LogRequest(te, url, httpVerb));
-                throw;
+                if (cts.IsCancellationRequested)
+                    throw new TimeoutException($"Request {url} was timeout", te);
+                else
+                    throw;
             }
             catch (Exception e)
             {
@@ -319,14 +323,15 @@ namespace ServiceClients
             if (!IsThrow)
                 return result;
 
-            try
+            if (!result.IsSuccessStatusCode)
             {
-                result.EnsureSuccessStatusCode();
-            }
-            catch (Exception e)
-            {
+                var e = new HttpRequestException(string.Format(CultureInfo.InvariantCulture, "Response status code does not indicate success: {0} ({1}).",
+       result.StatusCode,
+       result.ReasonPhrase
+   ));
                 if ((int)result.StatusCode >= 500)
                     ExceptionLogger?.Invoke(ExceptionData.LogEnsureSuccessed(e, url, httpVerb));
+                throw e;
             }
 
             return result;
