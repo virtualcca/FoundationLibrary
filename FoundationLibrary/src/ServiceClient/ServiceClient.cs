@@ -112,7 +112,7 @@ namespace ServiceClients
         /// <param name="url">请求地址Url</param>
         /// <param name="method">Http请求谓词</param>
         /// <param name="requestObj">请求参数</param>
-        /// <returns>结果反序列化为<typeparamref cref="T" />后返回</returns>
+        /// <returns>结果反序列化为<typeparamref name="T"/>后返回</returns>
         public Task<T> RequestAsync<T>(string url, HttpVerb method, object requestObj)
         {
             return RequestAsync<T>(url, method, requestObj, null);
@@ -137,7 +137,7 @@ namespace ServiceClients
         /// <param name="url">请求地址Url</param>
         /// <param name="method">Http请求谓词</param>
         /// <param name="content">自定义请求Http信息</param>
-        /// <returns>结果反序列化为<typeparamref cref="T" />后返回</returns>
+        /// <returns>结果反序列化为<typeparamref name="T"/>后返回</returns>
         public Task<T> RequestAsync<T>(string url, HttpVerb method, HttpContent content)
         {
             return RequestAsync<T>(url, method, content, null);
@@ -376,10 +376,7 @@ namespace ServiceClients
             HttpContent body;
             if (method != HttpVerb.Get && method != HttpVerb.Delete)
             {
-                if (requestObj != null)
-                    body = new StringContent(JsonConvert.SerializeObject(requestObj), Encoding.UTF8, "application/json");
-                else
-                    body = new StringContent(string.Empty);
+                body = requestObj != null ? new StringContent(JsonConvert.SerializeObject(requestObj), Encoding.UTF8, "application/json") : new StringContent(string.Empty);
             }
             else
             {
