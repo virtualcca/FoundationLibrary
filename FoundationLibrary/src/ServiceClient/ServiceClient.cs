@@ -392,24 +392,7 @@ namespace ServiceClients
         /// <returns></returns>
         private static string GetPropertyAttrName(PropertyInfo prop)
         {
-#if NET4
-            var attrName = string.Empty;
-            var attr = prop.GetCustomAttributes(typeof(JsonPropertyAttribute), true);
-            if (attr.Any())
-            {
-                var jsonPropertyAttribute = attr.First() as JsonPropertyAttribute;
-                if (jsonPropertyAttribute != null)
-                    attrName = jsonPropertyAttribute.PropertyName;
-            }
-            return attrName.Equals(string.Empty) ? prop.Name : attrName;
-#else
-            var attrName = string.Empty;
-            var attr = prop.GetCustomAttribute<JsonPropertyAttribute>();
-            if (!string.IsNullOrEmpty(attr?.PropertyName))
-                attrName = attr.PropertyName;
-
-            return attrName.Equals(string.Empty) ? prop.Name : attrName;
-#endif
+            return prop.Name;
         }
 
         private static string GetNameValueCollectionString(IEnumerable<KeyValuePair<string, string>> nameValueCollection)
