@@ -1,18 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.9
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{379F46BB-89B2-4247-9773-6782E95B34B5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9E1FB595-B8BC-4AED-BE70-B278FF3504AC}"
-	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
-	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ServiceClient", "src\ServiceClient\ServiceClient.xproj", "{4756E9D4-0ACF-4FBF-A53E-283129D9B2C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceClient", "src\ServiceClient\ServiceClient.csproj", "{4756E9D4-0ACF-4FBF-A53E-283129D9B2C3}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "DapperWrapper", "src\DapperWrapper\DapperWrapper.xproj", "{E3686202-151C-493E-9A2A-E3B90B2A3F92}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DapperWrapper", "src\DapperWrapper\DapperWrapper.csproj", "{E3686202-151C-493E-9A2A-E3B90B2A3F92}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
