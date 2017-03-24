@@ -81,22 +81,6 @@ namespace ServiceClients
 
         }
 
-        /// <summary>
-        ///     记录反序列化时候的信息
-        /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="url"></param>
-        /// <param name="httpVerb"></param>
-        /// <param name="result"></param>
-        /// <returns></returns>
-        public static ExceptionData LogDeserialize(Exception exception, string url, HttpVerb httpVerb)
-        {
-            var ed = new ExceptionData { Exception = exception };
-            ed.Data.Add("url", url);
-            ed.Data.Add("httpverb", httpVerb.ToString());
-            ed.Data.Add("type", "deserialize");
-            return ed;
-        }
 
     }
 

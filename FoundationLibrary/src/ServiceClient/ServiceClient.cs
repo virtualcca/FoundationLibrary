@@ -218,15 +218,7 @@ namespace ServiceClients
             CancellationTokenSource cts)
         {
             var result = await ReadRequestAsStream(url, method, content, cts).ConfigureAwait(false);
-            try
-            {
-                return DeserializeFromStream<T>(result);
-            }
-            catch (Exception e)
-            {
-                ExceptionLogger?.Invoke(ExceptionData.LogDeserialize(e, url, method));
-                throw;
-            }
+            return DeserializeFromStream<T>(result);
         }
 
         /// <summary>
