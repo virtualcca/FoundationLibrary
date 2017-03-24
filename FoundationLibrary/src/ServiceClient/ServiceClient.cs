@@ -347,7 +347,7 @@ namespace ServiceClients
             }, cancellationToken);
         }
 
-        private static string FormatUrl(string url, object requestObj, HttpVerb method)
+        internal static string FormatUrl(string url, object requestObj, HttpVerb method)
         {
             if (method == HttpVerb.Get || method == HttpVerb.Delete)
             {
