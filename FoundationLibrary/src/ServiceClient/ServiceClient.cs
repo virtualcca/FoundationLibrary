@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace ServiceClients
         #region [ Field ]
         private static ServiceClient _defaultInstance;
         private static readonly TimeSpan DefaultTimeout = new TimeSpan(0, 0, 30);
-        private static readonly Hashtable PropertiesCache = new Hashtable();
+        private static readonly ConcurrentDictionary<Type, Dictionary<string, string>> PropertiesCache = new ConcurrentDictionary<Type, Dictionary<string, string>>();
         #endregion
 
         #region [ Property ]
@@ -363,11 +363,11 @@ namespace ServiceClients
                              select x).ToDictionary(
                         x => x.Name,
                         x => x.GetValue(requestObj) == null ? string.Empty : x.GetValue(requestObj).ToString());
-                    PropertiesCache.Add(type, props);
+                    PropertiesCache.TryAdd(type, props);
                 }
                 else
                 {
-                    props = PropertiesCache[type] as Dictionary<string, string>;
+                    props = PropertiesCache[type];
                 }
 
                 var paramater = GetNameValueCollectionString(props);
@@ -412,9 +412,7 @@ namespace ServiceClients
 
         private static string Encode(string data)
         {
-            if (string.IsNullOrEmpty(data))
-                return string.Empty;
-            return Uri.EscapeDataString(data).Replace("%20", "+");
+            return string.IsNullOrEmpty(data) ? string.Empty : Uri.EscapeDataString(data).Replace("%20", "+");
         }
 
         #endregion
