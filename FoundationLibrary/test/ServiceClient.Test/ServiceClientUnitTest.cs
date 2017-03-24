@@ -34,9 +34,9 @@ namespace ServiceClientTest
         /// </summary>
         /// <returns></returns>
         [Fact]
-        public void Parallel_Deserialized()
+        public void Parallel_Post()
         {
-            var serviceClient = new ServiceClient(new DeserializedTestHttpHandler());
+            var serviceClient = new ServiceClient(new TestHttpHandler());
             Parallel.For(1, 60, (i, s) =>
             {
                 var result = serviceClient.RequestAsync<ComplateClass>("http://www.bing.com", HttpVerb.Post, null).ConfigureAwait(false).GetAwaiter().GetResult();
@@ -74,9 +74,9 @@ namespace ServiceClientTest
         }
 
         /// <summary>
-        ///     用于测试反序列化的Handler
+        ///     测试Handler
         /// </summary>
-        public class DeserializedTestHttpHandler : DelegatingHandler
+        public class TestHttpHandler : DelegatingHandler
         {
             /// <inheritdoc />
             protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
