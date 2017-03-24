@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -178,18 +179,12 @@ namespace ServiceClients
         /// <param name="requestObj">请求参数</param>
         /// <param name="cts">请求取消令牌</param>
         /// <returns></returns>
-        public async Task<T> RequestAsync<T>(string url, HttpVerb method, object requestObj, CancellationTokenSource cts)
+        public Task<T> RequestAsync<T>(string url, HttpVerb method, object requestObj, CancellationTokenSource cts)
         {
-            var result = await RequestAsync(url, method, requestObj, cts).ConfigureAwait(false);
-            try
-            {
-                return JsonConvert.DeserializeObject<T>(result);
-            }
-            catch (Exception e)
-            {
-                ExceptionLogger?.Invoke(ExceptionData.LogDeserialize(e, url, method, result));
-                throw;
-            }
+            var body = FormatParameter(requestObj, method);
+            url = FormatUrl(url, requestObj, method);
+
+            return RequestAsync<T>(url, method, body, cts);
         }
 
         /// <summary>
@@ -200,21 +195,12 @@ namespace ServiceClients
         /// <param name="requestObj">请求参数</param>
         /// <param name="cts">请求取消令牌</param>
         /// <returns></returns>
-        public async Task<string> RequestAsync(string url, HttpVerb method, object requestObj, CancellationTokenSource cts)
+        public Task<string> RequestAsync(string url, HttpVerb method, object requestObj, CancellationTokenSource cts)
         {
             var body = FormatParameter(requestObj, method);
             url = FormatUrl(url, requestObj, method);
 
-            var response = await SendRequest(url, method, body).ConfigureAwait(false);
-
-            try
-            {
-                return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            }
-            finally
-            {
-                body?.Dispose();
-            }
+            return RequestAsync(url, method, body, cts);
         }
 
 
@@ -231,14 +217,14 @@ namespace ServiceClients
         public async Task<T> RequestAsync<T>(string url, HttpVerb method, HttpContent content,
             CancellationTokenSource cts)
         {
-            var result = await RequestAsync(url, method, content).ConfigureAwait(false);
+            var result = await ReadRequestAsStream(url, method, content, cts).ConfigureAwait(false);
             try
             {
-                return JsonConvert.DeserializeObject<T>(result);
+                return DeserializeFromStream<T>(result);
             }
             catch (Exception e)
             {
-                ExceptionLogger?.Invoke(ExceptionData.LogDeserialize(e, url, method, result));
+                ExceptionLogger?.Invoke(ExceptionData.LogDeserialize(e, url, method));
                 throw;
             }
         }
@@ -268,6 +254,40 @@ namespace ServiceClients
         #endregion
 
         #region [ Private Method ]
+
+        private async Task<Stream> ReadRequestAsStream(string url, HttpVerb method, HttpContent content, CancellationTokenSource cts)
+        {
+            try
+            {
+                var response = await SendRequest(url, method, content, cts).ConfigureAwait(false);
+                return await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            }
+            finally
+            {
+                content?.Dispose();
+            }
+        }
+
+        private static T DeserializeFromStream<T>(Stream jsonStream)
+        {
+            if (jsonStream == null)
+                throw new ArgumentNullException(nameof(jsonStream));
+
+            if (!jsonStream.CanRead)
+                throw new ArgumentException("Json Stream must support reading", nameof(jsonStream));
+
+            T deserializedObj;
+            using (var sr = new StreamReader(jsonStream))
+            {
+                using (var reader = new JsonTextReader(sr))
+                {
+                    var serializer = new JsonSerializer();
+                    deserializedObj = serializer.Deserialize<T>(reader);
+                }
+            }
+            return deserializedObj;
+        }
+
 
         private async Task<HttpResponseMessage> SendRequest(string url, HttpVerb httpVerb, HttpContent body, CancellationTokenSource cts = null)
         {
