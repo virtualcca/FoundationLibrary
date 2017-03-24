@@ -33,7 +33,7 @@ namespace ServiceClientTest
         ///     数据转QueryString的并发测试
         /// </summary>
         [Fact]
-        public void MuilitTask_FormUrl_SimpleClass()
+        public void Parallel_FormUrl_SimpleClass()
         {
             var testA = new TestClassA { A = "a" };
 
@@ -51,16 +51,19 @@ namespace ServiceClientTest
         /// </summary>
         /// <returns></returns>
         [Fact]
-        public async Task Deserialized()
+        public void Parallel_Deserialized()
         {
             var serviceClient = new ServiceClient(new DeserializedTestHttpHandler());
-            var result = await serviceClient.RequestAsync<ComplateClass>("http://www.bing.com", HttpVerb.Post, null);
-            Assert.Equal(result.A, "a");
-            Assert.Equal(result.B, "b");
-            Assert.NotNull(result.TestClassA);
-            Assert.NotNull(result.ListInt);
-            Assert.Null(result.TestClassB);
-            Assert.Contains(1, result.ListInt);
+            Parallel.For(1, 60, (i, s) =>
+            {
+                var result = serviceClient.RequestAsync<ComplateClass>("http://www.bing.com", HttpVerb.Post, null).ConfigureAwait(false).GetAwaiter().GetResult();
+                Assert.Equal(result.A, "a");
+                Assert.Equal(result.B, "b");
+                Assert.NotNull(result.TestClassA);
+                Assert.NotNull(result.ListInt);
+                Assert.Null(result.TestClassB);
+                Assert.Contains(1, result.ListInt);
+            });
         }
 
 
