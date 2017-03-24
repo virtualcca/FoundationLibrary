@@ -269,7 +269,7 @@ namespace ServiceClients
             {
                 using (var reader = new JsonTextReader(sr))
                 {
-                    var serializer = new JsonSerializer();
+                    var serializer = JsonSerializer.CreateDefault();
                     deserializedObj = serializer.Deserialize<T>(reader);
                 }
             }
