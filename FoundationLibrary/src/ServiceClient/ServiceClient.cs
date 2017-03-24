@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -22,6 +23,7 @@ namespace ServiceClients
         #region [ Field ]
         private static ServiceClient _defaultInstance;
         private static readonly TimeSpan DefaultTimeout = new TimeSpan(0, 0, 30);
+        private static readonly Hashtable PropertiesCache = new Hashtable();
         #endregion
 
         #region [ Property ]
@@ -351,17 +353,23 @@ namespace ServiceClients
             {
                 if (requestObj == null)
                     return url;
-#if NET4
-                var props = (from x in requestObj.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
+
+                var type = requestObj.GetType();
+
+                Dictionary<string, string> props;
+                if (!PropertiesCache.ContainsKey(type))
+                {
+                    props = (from x in requestObj.GetType().GetRuntimeProperties()
                              select x).ToDictionary(
-                        GetPropertyAttrName,
-                        x => x.GetValue(requestObj, null) == null ? string.Empty : x.GetValue(requestObj, null).ToString());
-#else
-                var props = (from x in requestObj.GetType().GetRuntimeProperties()
-                             select x).ToDictionary(
-                       GetPropertyAttrName,
-                       x => x.GetValue(requestObj) == null ? string.Empty : x.GetValue(requestObj).ToString());
-#endif
+                        x => x.Name,
+                        x => x.GetValue(requestObj) == null ? string.Empty : x.GetValue(requestObj).ToString());
+                    PropertiesCache.Add(type, props);
+                }
+                else
+                {
+                    props = PropertiesCache[type] as Dictionary<string, string>;
+                }
+
                 var paramater = GetNameValueCollectionString(props);
 
                 return url.Contains("?")
@@ -383,16 +391,6 @@ namespace ServiceClients
                 body = null;
             }
             return body;
-        }
-
-        /// <summary>
-        ///     如果定义了<see cref="JsonPropertyAttribute" />将读取其定义的属性名,否则将使用属性本身的名字
-        /// </summary>
-        /// <param name="prop"></param>
-        /// <returns></returns>
-        private static string GetPropertyAttrName(PropertyInfo prop)
-        {
-            return prop.Name;
         }
 
         private static string GetNameValueCollectionString(IEnumerable<KeyValuePair<string, string>> nameValueCollection)
