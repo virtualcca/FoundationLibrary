@@ -217,8 +217,17 @@ namespace ServiceClients
         public async Task<T> RequestAsync<T>(string url, HttpVerb method, HttpContent content,
             CancellationTokenSource cts)
         {
-            var result = await ReadRequestAsStream(url, method, content, cts).ConfigureAwait(false);
-            return DeserializeFromStream<T>(result);
+            try
+            {
+                var response = await SendRequest(url, method, content, cts).ConfigureAwait(false);
+                return DeserializeFromStream<T>(await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
+            }
+            finally
+            {
+                content?.Dispose();
+            }
+
+
         }
 
         /// <summary>
@@ -246,19 +255,6 @@ namespace ServiceClients
         #endregion
 
         #region [ Private Method ]
-
-        private async Task<Stream> ReadRequestAsStream(string url, HttpVerb method, HttpContent content, CancellationTokenSource cts)
-        {
-            try
-            {
-                var response = await SendRequest(url, method, content, cts).ConfigureAwait(false);
-                return await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
-            }
-            finally
-            {
-                content?.Dispose();
-            }
-        }
 
         private static T DeserializeFromStream<T>(Stream jsonStream)
         {
