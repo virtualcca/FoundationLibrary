@@ -39,7 +39,7 @@ namespace ServiceClientTest
             var serviceClient = new ServiceClient(new TestHttpHandler());
             Parallel.For(1, 60, (i, s) =>
             {
-                var result = serviceClient.RequestAsync<ComplateClass>("http://www.bing.com", HttpVerb.Post, null).ConfigureAwait(false).GetAwaiter().GetResult();
+                var result = serviceClient.RequestAsync<ComplateClass>("http://www.bing.com", HttpVerb.Post, new { A = "a", B = (string)null }).ConfigureAwait(false).GetAwaiter().GetResult();
                 Assert.Equal(result.A, "a");
                 Assert.Equal(result.B, "b");
                 Assert.NotNull(result.TestClassA);

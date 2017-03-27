@@ -25,6 +25,10 @@ namespace ServiceClients
         private static ServiceClient _defaultInstance;
         private static readonly TimeSpan DefaultTimeout = new TimeSpan(0, 0, 30);
         private static readonly ConcurrentDictionary<Type, Dictionary<string, string>> PropertiesCache = new ConcurrentDictionary<Type, Dictionary<string, string>>();
+        private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
+        {
+            NullValueHandling = NullValueHandling.Ignore
+        };
         #endregion
 
         #region [ Property ]
@@ -60,6 +64,7 @@ namespace ServiceClients
         ///     Default:true
         /// </summary>
         public bool IsThrow { get; set; }
+
         #endregion
 
         #region [ Ctor ]
@@ -392,7 +397,7 @@ namespace ServiceClients
             HttpContent body;
             if (method != HttpVerb.Get && method != HttpVerb.Delete)
             {
-                body = requestObj != null ? new StringContent(JsonConvert.SerializeObject(requestObj), Encoding.UTF8, "application/json") : new StringContent(string.Empty);
+                body = requestObj != null ? new StringContent(JsonConvert.SerializeObject(requestObj, Formatting.None, JsonSerializerSettings), Encoding.UTF8, "application/json") : new StringContent(string.Empty);
             }
             else
             {
