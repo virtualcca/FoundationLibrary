@@ -25,10 +25,6 @@ namespace ServiceClients
         private static ServiceClient _defaultInstance;
         private static readonly TimeSpan DefaultTimeout = new TimeSpan(0, 0, 30);
         private static readonly ConcurrentDictionary<Type, Dictionary<string, string>> PropertiesCache = new ConcurrentDictionary<Type, Dictionary<string, string>>();
-        private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
-        {
-            NullValueHandling = NullValueHandling.Ignore
-        };
         #endregion
 
         #region [ Property ]
@@ -38,6 +34,14 @@ namespace ServiceClients
         ///     <para>由于<see cref="HttpClient" />是为线程安全的类,所以本类以静态单例的模式提供服务也同样是线程安全的</para>
         /// </summary>
         public static ServiceClient Default => _defaultInstance ?? (_defaultInstance = new ServiceClient());
+
+        /// <summary>
+        ///     Json序列化设置
+        /// </summary>
+        public static JsonSerializerSettings JsonSerializerSettings => new JsonSerializerSettings
+        {
+            NullValueHandling = NullValueHandling.Ignore
+        };
 
         /// <summary>
         ///     内部的<see cref="HttpClient" />实例
