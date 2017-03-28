@@ -18,12 +18,10 @@ namespace ServiceClientTest
         [Fact]
         public void Parallel_FormUrl_SimpleClass()
         {
-            var testA = new TestClassA { A = "a" };
-
             Parallel.For(1, 100, (i, s) =>
             {
-                var result = ServiceClient.FormatUrl("abc.com", testA, HttpVerb.Get);
-                Assert.Equal("abc.com?A=a", result);
+                var result = ServiceClient.FormatUrl("abc.com", new TestClassA { A = i.ToString() }, HttpVerb.Get);
+                Assert.Equal("abc.com?A=" + i.ToString(), result);
             });
 
 
