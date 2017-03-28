@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+// ReSharper disable PossibleMultipleEnumeration
 namespace ServiceClients
 {
     /// <summary>
@@ -24,7 +25,7 @@ namespace ServiceClients
         #region [ Field ]
         private static ServiceClient _defaultInstance;
         private static readonly TimeSpan DefaultTimeout = new TimeSpan(0, 0, 30);
-        private static readonly ConcurrentDictionary<Type, Dictionary<string, string>> PropertiesCache = new ConcurrentDictionary<Type, Dictionary<string, string>>();
+        private static readonly ConcurrentDictionary<Type, IEnumerable<PropertyInfo>> PropertiesCache = new ConcurrentDictionary<Type, IEnumerable<PropertyInfo>>();
         #endregion
 
         #region [ Property ]
@@ -373,13 +374,10 @@ namespace ServiceClients
 
                 var type = requestObj.GetType();
 
-                Dictionary<string, string> props;
+                IEnumerable<PropertyInfo> props;
                 if (!PropertiesCache.ContainsKey(type))
                 {
-                    props = (from x in requestObj.GetType().GetRuntimeProperties()
-                             select x).ToDictionary(
-                        x => x.Name,
-                        x => x.GetValue(requestObj) == null ? string.Empty : x.GetValue(requestObj).ToString());
+                    props = requestObj.GetType().GetRuntimeProperties();
                     PropertiesCache.TryAdd(type, props);
                 }
                 else
@@ -387,7 +385,9 @@ namespace ServiceClients
                     props = PropertiesCache[type];
                 }
 
-                var paramater = GetNameValueCollectionString(props);
+                var paramater = GetNameValueCollectionString(props.ToDictionary(
+                        x => x.Name,
+                        x => x.GetValue(requestObj) == null ? string.Empty : x.GetValue(requestObj).ToString()));
 
                 return url.Contains("?")
                     ? $"{url}&{paramater}"
