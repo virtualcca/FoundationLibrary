@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <VersionPrefix>1.4.0</VersionPrefix>
+    <VersionPrefix>1.5.0</VersionPrefix>
     <TargetFrameworks>net45;net40;netstandard1.3</TargetFrameworks>
     <AssemblyName>DapperWrapper</AssemblyName>
     <PackageId>DapperWrapper</PackageId>
@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dapper" Version="1.50.1" />
+    <PackageReference Include="Dapper" Version="1.50.2" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
