@@ -39,10 +39,7 @@ namespace ServiceClients
         /// <summary>
         ///     Json序列化设置
         /// </summary>
-        public static JsonSerializerSettings JsonSerializerSettings => new JsonSerializerSettings
-        {
-            NullValueHandling = NullValueHandling.Ignore
-        };
+        public static JsonSerializerSettings JsonSerializerSettings { get; } = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
 
         /// <summary>
         ///     内部的<see cref="HttpClient" />实例
