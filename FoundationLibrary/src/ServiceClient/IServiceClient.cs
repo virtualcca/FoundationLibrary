@@ -27,10 +27,27 @@ namespace ServiceClients
         /// <typeparam name="T">返回结果的类型</typeparam>
         /// <param name="url">请求地址Url</param>
         /// <param name="method">Http请求谓词</param>
+        /// <returns>结果反序列化为<typeparamref name="T" />后返回</returns>
+        Task<T> RequestAsync<T>(string url, HttpVerb method);
+
+        /// <summary>
+        ///     通过Http请求数据
+        /// </summary>
+        /// <typeparam name="T">返回结果的类型</typeparam>
+        /// <param name="url">请求地址Url</param>
+        /// <param name="method">Http请求谓词</param>
         /// <param name="requestObj">请求参数</param>
         /// <returns>结果反序列化为<typeparamref name="T" />后返回</returns>
         Task<T> RequestAsync<T>(string url, HttpVerb method,
             object requestObj);
+
+        /// <summary>
+        ///     通过Http请求数据
+        /// </summary>
+        /// <param name="url">请求地址Url</param>
+        /// <param name="method">Http请求谓词</param>
+        /// <returns>返回字符串表示的结果</returns>
+        Task<string> RequestAsync(string url, HttpVerb method);
 
         /// <summary>
         ///     通过Http请求数据
