@@ -84,6 +84,26 @@ namespace DapperWrapper
             int? commandTimeout = null,
             CommandType? commandType = null);
 
+        IEnumerable<TReturn> Query<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn>(
+            string sql,
+            Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn> map,
+            object param = null,
+            IDbTransaction transaction = null,
+            bool buffered = true,
+            string splitOn = "Id",
+            int? commandTimeout = null,
+            CommandType? commandType = null);
+
+        IEnumerable<TReturn> Query<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn>(
+            string sql,
+            Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn> map,
+            object param = null,
+            IDbTransaction transaction = null,
+            bool buffered = true,
+            string splitOn = "Id",
+            int? commandTimeout = null,
+            CommandType? commandType = null);
+
         T QuerySingle<T>(string sql, object param = null,
             IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null);
 
@@ -112,7 +132,7 @@ namespace DapperWrapper
             IDbTransaction transaction = null, int? commandTimeout = null,
             CommandType? commandType = null);
 
-        #if !NET4
+#if !NET4
         Task<int> ExecuteAsync(
           string sql,
           object param = null,
@@ -202,7 +222,7 @@ namespace DapperWrapper
         Task<SqlMapper.GridReader> QueryMultipleAsync(string sql, object param = null,
             IDbTransaction transaction = null, int? commandTimeout = null,
             CommandType? commandType = null);
-        #endif
+#endif
 
     }
 }

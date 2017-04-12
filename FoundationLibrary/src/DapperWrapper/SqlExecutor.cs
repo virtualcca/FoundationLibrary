@@ -223,6 +223,54 @@ namespace DapperWrapper
             }
         }
 
+        public IEnumerable<TReturn> Query<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn>(string sql,
+            Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn> map, object param = null,
+            IDbTransaction transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null,
+            CommandType? commandType = null)
+        {
+            try
+            {
+                _dbConnection.Open();
+                return _dbConnection.Query(
+                    sql,
+                    map,
+                    param,
+                    transaction,
+                    buffered,
+                    splitOn,
+                    commandTimeout,
+                    commandType);
+            }
+            finally
+            {
+                _dbConnection.Close();
+            }
+        }
+
+        public IEnumerable<TReturn> Query<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn>(string sql,
+            Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn> map, object param = null,
+            IDbTransaction transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null,
+            CommandType? commandType = null)
+        {
+            try
+            {
+                _dbConnection.Open();
+                return _dbConnection.Query(
+                    sql,
+                    map,
+                    param,
+                    transaction,
+                    buffered,
+                    splitOn,
+                    commandTimeout,
+                    commandType);
+            }
+            finally
+            {
+                _dbConnection.Close();
+            }
+        }
+
         public T QuerySingle<T>(string sql, object param = null,
             IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
         {
