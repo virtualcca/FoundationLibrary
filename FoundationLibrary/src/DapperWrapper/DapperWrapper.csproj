@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <VersionPrefix>1.5.0</VersionPrefix>
+    <VersionPrefix>1.5.1</VersionPrefix>
     <TargetFrameworks>net45;net40;netstandard1.3</TargetFrameworks>
     <AssemblyName>DapperWrapper</AssemblyName>
     <PackageId>DapperWrapper</PackageId>
