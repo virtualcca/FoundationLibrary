@@ -92,9 +92,9 @@ namespace ServiceClients
         /// <param name="url">请求地址Url</param>
         /// <param name="method">Http请求谓词</param>
         /// <param name="requestObj">请求参数</param>
-        /// <param name="cts">请求取消令牌</param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<T> RequestAsync<T>(string url, HttpVerb method, object requestObj, CancellationTokenSource cts);
+        Task<T> RequestAsync<T>(string url, HttpVerb method, object requestObj, CancellationToken cancellationToken);
 
         /// <summary>
         ///     通过Http请求数据
@@ -102,9 +102,9 @@ namespace ServiceClients
         /// <param name="url">请求地址Url</param>
         /// <param name="method">Http请求谓词</param>
         /// <param name="requestObj">请求参数</param>
-        /// <param name="cts">请求取消令牌</param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<string> RequestAsync(string url, HttpVerb method, object requestObj, CancellationTokenSource cts);
+        Task<string> RequestAsync(string url, HttpVerb method, object requestObj, CancellationToken cancellationToken);
 
         /// <summary>
         ///     通过Http请求数据
@@ -113,10 +113,9 @@ namespace ServiceClients
         /// <param name="url">请求地址Url</param>
         /// <param name="method">Http请求谓词</param>
         /// <param name="content">自定义请求Http信息</param>
-        /// <param name="cts">请求取消令牌</param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<T> RequestAsync<T>(string url, HttpVerb method, HttpContent content,
-            CancellationTokenSource cts);
+        Task<T> RequestAsync<T>(string url, HttpVerb method, HttpContent content, CancellationToken cancellationToken);
 
         /// <summary>
         ///     通过Http请求数据
@@ -124,8 +123,8 @@ namespace ServiceClients
         /// <param name="url">请求地址Url</param>
         /// <param name="method">Http请求谓词</param>
         /// <param name="content">自定义请求Http信息</param>
-        /// <param name="cts">请求取消令牌</param>
+        /// <param name="cancellationToken">请求取消令牌</param>
         /// <returns>返回字符串表示的结果</returns>
-        Task<string> RequestAsync(string url, HttpVerb method, HttpContent content, CancellationTokenSource cts);
+        Task<string> RequestAsync(string url, HttpVerb method, HttpContent content, CancellationToken cancellationToken);
     }
 }

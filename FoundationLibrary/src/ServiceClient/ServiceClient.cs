@@ -49,7 +49,11 @@ namespace ServiceClients
         /// <summary>
         ///     超时时间
         /// </summary>
-        public TimeSpan Timeout { get; set; }
+        public TimeSpan Timeout
+        {
+            get => InnerHttpClient.Timeout;
+            set => InnerHttpClient.Timeout = value;
+        }
 
         /// <summary>
         ///     默认Http请求头
@@ -137,7 +141,7 @@ namespace ServiceClients
         /// <returns>结果反序列化为<typeparamref name="T"/>后返回</returns>
         public Task<T> RequestAsync<T>(string url, HttpVerb method, object requestObj)
         {
-            return RequestAsync<T>(url, method, requestObj, null);
+            return RequestAsync<T>(url, method, requestObj, CancellationToken.None);
         }
 
         /// <summary>
@@ -148,7 +152,7 @@ namespace ServiceClients
         /// <returns>返回字符串表示的结果</returns>
         public Task<string> RequestAsync(string url, HttpVerb method)
         {
-            return RequestAsync(url, method, null, null);
+            return RequestAsync(url, method, null, CancellationToken.None);
         }
 
         /// <summary>
@@ -160,7 +164,7 @@ namespace ServiceClients
         /// <returns>返回字符串表示的结果</returns>
         public Task<string> RequestAsync(string url, HttpVerb method, object requestObj)
         {
-            return RequestAsync(url, method, requestObj, null);
+            return RequestAsync(url, method, requestObj, CancellationToken.None);
         }
 
         /// <summary>
@@ -173,7 +177,7 @@ namespace ServiceClients
         /// <returns>结果反序列化为<typeparamref name="T"/>后返回</returns>
         public Task<T> RequestAsync<T>(string url, HttpVerb method, HttpContent content)
         {
-            return RequestAsync<T>(url, method, content, null);
+            return RequestAsync<T>(url, method, content, CancellationToken.None);
         }
 
         /// <summary>
@@ -185,7 +189,7 @@ namespace ServiceClients
         /// <returns>返回字符串表示的结果</returns>
         public Task<string> RequestAsync(string url, HttpVerb method, HttpContent content)
         {
-            return RequestAsync(url, method, content, null);
+            return RequestAsync(url, method, content, CancellationToken.None);
         }
 
         /// <summary>
@@ -207,14 +211,14 @@ namespace ServiceClients
         /// <param name="url">请求地址Url</param>
         /// <param name="method">Http请求谓词</param>
         /// <param name="requestObj">请求参数</param>
-        /// <param name="cts">请求取消令牌</param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task<T> RequestAsync<T>(string url, HttpVerb method, object requestObj, CancellationTokenSource cts)
+        public Task<T> RequestAsync<T>(string url, HttpVerb method, object requestObj, CancellationToken cancellationToken)
         {
             var body = FormatParameter(requestObj, method);
             url = FormatUrl(url, requestObj, method);
 
-            return RequestAsync<T>(url, method, body, cts);
+            return RequestAsync<T>(url, method, body, cancellationToken);
         }
 
         /// <summary>
@@ -223,16 +227,15 @@ namespace ServiceClients
         /// <param name="url">请求地址Url</param>
         /// <param name="method">Http请求谓词</param>
         /// <param name="requestObj">请求参数</param>
-        /// <param name="cts">请求取消令牌</param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task<string> RequestAsync(string url, HttpVerb method, object requestObj, CancellationTokenSource cts)
+        public Task<string> RequestAsync(string url, HttpVerb method, object requestObj, CancellationToken cancellationToken)
         {
             var body = FormatParameter(requestObj, method);
             url = FormatUrl(url, requestObj, method);
 
-            return RequestAsync(url, method, body, cts);
+            return RequestAsync(url, method, body, cancellationToken);
         }
-
 
 
         /// <summary>
@@ -242,14 +245,14 @@ namespace ServiceClients
         /// <param name="url">请求地址Url</param>
         /// <param name="method">Http请求谓词</param>
         /// <param name="content">自定义请求Http信息</param>
-        /// <param name="cts">请求取消令牌</param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public async Task<T> RequestAsync<T>(string url, HttpVerb method, HttpContent content,
-            CancellationTokenSource cts)
+            CancellationToken cancellationToken)
         {
             try
             {
-                var response = await SendRequest(url, method, content, cts).ConfigureAwait(false);
+                var response = await SendRequest(url, method, content, cancellationToken).ConfigureAwait(false);
                 return DeserializeFromStream<T>(await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
             }
             finally
@@ -266,13 +269,13 @@ namespace ServiceClients
         /// <param name="url">请求地址Url</param>
         /// <param name="method">Http请求谓词</param>
         /// <param name="content">自定义请求Http信息</param>
-        /// <param name="cts">请求取消令牌</param>
+        /// <param name="cancellationToken">请求取消令牌</param>
         /// <returns>返回字符串表示的结果</returns>
-        public async Task<string> RequestAsync(string url, HttpVerb method, HttpContent content, CancellationTokenSource cts)
+        public async Task<string> RequestAsync(string url, HttpVerb method, HttpContent content, CancellationToken cancellationToken)
         {
             try
             {
-                var response = await SendRequest(url, method, content, cts).ConfigureAwait(false);
+                var response = await SendRequest(url, method, content, cancellationToken).ConfigureAwait(false);
                 return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             }
             finally
@@ -307,11 +310,8 @@ namespace ServiceClients
         }
 
 
-        private async Task<HttpResponseMessage> SendRequest(string url, HttpVerb httpVerb, HttpContent body, CancellationTokenSource cts = null)
+        private async Task<HttpResponseMessage> SendRequest(string url, HttpVerb httpVerb, HttpContent body, CancellationToken cancellationToken)
         {
-            if (cts == null)
-                cts = new CancellationTokenSource();
-            cts.CancelAfter(Timeout);
             HttpResponseMessage result;
             try
             {
@@ -320,24 +320,24 @@ namespace ServiceClients
                     case HttpVerb.Get:
                         result =
                             await
-                                InnerHttpClient.GetAsync(url, cts.Token).ConfigureAwait(false);
+                                InnerHttpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
                         break;
                     case HttpVerb.Post:
                         result =
                             await
-                                InnerHttpClient.PostAsync(url, body, cts.Token).ConfigureAwait(false);
+                                InnerHttpClient.PostAsync(url, body, cancellationToken).ConfigureAwait(false);
                         break;
                     case HttpVerb.Put:
                         result =
-                            await InnerHttpClient.PutAsync(url, body, cts.Token).ConfigureAwait(false);
+                            await InnerHttpClient.PutAsync(url, body, cancellationToken).ConfigureAwait(false);
                         break;
                     case HttpVerb.Patch:
-                        result = await PatchAsync(url, body, cts.Token).ConfigureAwait(false);
+                        result = await PatchAsync(url, body, cancellationToken).ConfigureAwait(false);
                         break;
                     case HttpVerb.Delete:
                         result =
                             await
-                                InnerHttpClient.DeleteAsync(url, cts.Token).ConfigureAwait(false);
+                                InnerHttpClient.DeleteAsync(url, cancellationToken).ConfigureAwait(false);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(httpVerb.ToString(), httpVerb, null);
@@ -345,13 +345,8 @@ namespace ServiceClients
             }
             catch (TaskCanceledException te)
             {
-                ExceptionLogger?.Invoke(cts.Token.IsCancellationRequested
-                    ? ExceptionData.LogRequestTimeout(te, url, httpVerb)
-                    : ExceptionData.LogRequest(te, url, httpVerb));
-                if (cts.IsCancellationRequested)
-                    throw new TimeoutException($"Request {url} was timeout", te);
-                else
-                    throw;
+                ExceptionData.LogRequestTimeout(te, url, httpVerb);
+                throw;
             }
             catch (Exception e)
             {
