@@ -19,7 +19,7 @@ namespace ServiceClients
         /// <summary>
         ///     超时时间
         /// </summary>
-        TimeSpan Timeout { get; set; }
+        TimeSpan Timeout { get; }
 
         /// <summary>
         ///     通过Http请求数据

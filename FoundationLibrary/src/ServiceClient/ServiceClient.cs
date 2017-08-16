@@ -52,7 +52,6 @@ namespace ServiceClients
         public TimeSpan Timeout
         {
             get => InnerHttpClient.Timeout;
-            set => InnerHttpClient.Timeout = value;
         }
 
         /// <summary>
@@ -108,10 +107,11 @@ namespace ServiceClients
         {
             handler = handler ?? new HttpClientHandler();
             IsThrow = true;
-            Timeout = timeout;
+            
             InnerHttpClient = new HttpClient(handler)
             {
-                BaseAddress = baseAddress
+                BaseAddress = baseAddress,
+                Timeout = timeout
             };
         }
 
