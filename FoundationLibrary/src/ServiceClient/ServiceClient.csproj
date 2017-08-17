@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <VersionPrefix>1.4.2</VersionPrefix>
     <Authors>LeoLaw</Authors>
+    <Description>请求Http的客户端</Description>
     <TargetFrameworks>netstandard1.3;net46;net45</TargetFrameworks>
     <AssemblyName>ServiceClient</AssemblyName>
     <PackageId>ServiceClient</PackageId>
@@ -11,7 +11,7 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <RootNamespace>ServiceClients</RootNamespace>
-    <Version>1.4.4</Version>
+    <Version>1.5.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
