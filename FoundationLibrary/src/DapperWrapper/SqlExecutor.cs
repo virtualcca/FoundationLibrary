@@ -424,12 +424,29 @@ namespace DapperWrapper
             }
         }
 
+        [Obsolete("此方法未释放连接,废弃", true)]
         public SqlMapper.GridReader QueryMultiple(string sql, object param = null,
            IDbTransaction transaction = null, int? commandTimeout = null,
            CommandType? commandType = null)
         {
             _dbConnection.Open();
             return _dbConnection.QueryMultiple(sql, param, transaction, commandTimeout, commandType);
+        }
+
+        public T QueryMultiple<T>(string sql, object parameters, Func<SqlMapper.GridReader, T> map)
+        {
+            try
+            {
+                _dbConnection.Open();
+                using (var reader = _dbConnection.QueryMultiple(sql, parameters))
+                {
+                    return map(reader);
+                }
+            }
+            finally
+            {
+                _dbConnection.Close();
+            }
         }
 
 #if !NET4

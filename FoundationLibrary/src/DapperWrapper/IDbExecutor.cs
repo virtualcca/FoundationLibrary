@@ -128,9 +128,12 @@ namespace DapperWrapper
         dynamic QueryFirstOrDefault(string sql, object param = null,
             IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null);
 
+        [Obsolete("废弃此方法", true)]
         SqlMapper.GridReader QueryMultiple(string sql, object param = null,
             IDbTransaction transaction = null, int? commandTimeout = null,
             CommandType? commandType = null);
+
+        T QueryMultiple<T>(string sql, object parameters, Func<SqlMapper.GridReader, T> map);
 
 #if !NET4
         Task<int> ExecuteAsync(
