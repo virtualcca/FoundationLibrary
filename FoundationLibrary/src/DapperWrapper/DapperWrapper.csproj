@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <VersionPrefix>1.5.4</VersionPrefix>
+    <VersionPrefix>1.5.5</VersionPrefix>
     <Description>对Dapper进行实例化的封装.</Description>
     <TargetFrameworks>net45;net40;netstandard1.3</TargetFrameworks>
     <AssemblyName>DapperWrapper</AssemblyName>
@@ -16,19 +16,11 @@
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
-    <Reference Include="System.Runtime" />
-    <Reference Include="System.Threading.Tasks" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Transactions" />
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
+   
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
-    <Reference Include="System.Data" />
-    <Reference Include="System.Transactions" />
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
+
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net45' ">
